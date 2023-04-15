@@ -17,13 +17,13 @@ GO
 
 CREATE TABLE Facility (
     ID INT PRIMARY KEY,
-    Type VARCHAR(255),
-    Name VARCHAR(255),
+    [Type] VARCHAR(255),
+    [Name] VARCHAR(255),
     Borough VARCHAR(255)
 );
 GO
 
-CREATE TABLE Location (
+CREATE TABLE [Location] (
     ID INT PRIMARY KEY,
     IncidentZip VARCHAR(255),
     IncidentAddress VARCHAR(255),
@@ -50,7 +50,7 @@ CREATE TABLE ServiceRequest (
     DueDate DATETIME,
     ResolutionDescription VARCHAR(MAX),
     ResolutionActionUpdatedDate DATETIME,
-    Status VARCHAR(255),
+    [Status] VARCHAR(255),
     AgencyID INT,
     LocationID INT,
     FOREIGN KEY (AgencyID) REFERENCES Agency(ID),
@@ -60,7 +60,7 @@ GO
 
 CREATE TABLE Vehicle (
     ID INT PRIMARY KEY,
-    Type VARCHAR(255),
+    [Type] VARCHAR(255),
     CompanyBorough VARCHAR(255),
     PickUpLocation VARCHAR(255)
 );
@@ -77,7 +77,7 @@ GO
 
 CREATE TABLE Bridge (
     ID INT PRIMARY KEY,
-    Name VARCHAR(255),
+    [Name] VARCHAR(255),
     Direction VARCHAR(255),
     Ramp VARCHAR(255),
     Segment VARCHAR(255),
