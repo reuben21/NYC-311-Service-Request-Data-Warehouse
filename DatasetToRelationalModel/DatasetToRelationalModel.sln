@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{C9674DCB-5085-4A16-B785-4C70DD1589BD}") = "DatasetToRelationalModel", "DatasetToRelationalModel\DatasetToRelationalModel.dtproj", "{9AFF4EC2-8CC5-4E06-8930-E1DB0913A3F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AFF4EC2-8CC5-4E06-8930-E1DB0913A3F2}.Development|Default.ActiveCfg = Development
+		{9AFF4EC2-8CC5-4E06-8930-E1DB0913A3F2}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {548D17AD-E160-41E5-8DA3-A5415D305267}
+	EndGlobalSection
+EndGlobal
