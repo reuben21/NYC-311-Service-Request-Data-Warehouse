@@ -12,19 +12,59 @@ USE NYC_311_REQUESTS;
 GO
 
 -- RELATIONAL MODEL
+DROP TABLE Agency;
+
 
 CREATE TABLE Agency (
-    ID INT PRIMARY KEY,
+    ID INT PRIMARY KEY IDENTITY,
     AgencyName VARCHAR(255),
 	AgencyDescription VARCHAR(255),
 );
 GO
 
+CREATE OR ALTER PROCEDURE Agency_Extract
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Agency( AgencyName, AgencyDescription)
+    SELECT DISTINCT 
+        Agency, 
+        Agency_Name
+    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+    WHERE Agency IS NOT NULL;
+END
+GO
+
+EXEC Agency_Extract;
+
+SELECT * FROM Agency;
+
+DROP TABLE Complaint;
+
 CREATE TABLE Complaint (
-    ID INT PRIMARY KEY,
+    ID INT PRIMARY KEY IDENTITY,
     ComplaintType VARCHAR(255),
     ComplaintDescriptor VARCHAR(MAX)
 );
+GO
+
+CREATE OR ALTER PROCEDURE Complaint_Extract
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Complaint( ComplaintType, ComplaintDescriptor)
+    SELECT DISTINCT 
+        Complaint_Type, 
+        Descriptor 
+    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+    WHERE Complaint_Type IS NOT NULL;
+END
+GO
+
+EXEC Complaint_Extract;
+GO
+
+SELECT * from Complaint;
 GO
 
 CREATE TABLE Facility (
