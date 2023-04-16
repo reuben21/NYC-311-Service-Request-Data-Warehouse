@@ -11,8 +11,8 @@
   DTS:LocaleID="4105"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="3"
-  DTS:VersionGUID="{FD98FE19-BCCA-4EFE-A60D-B0132DA4D843}">
+  DTS:VersionBuild="4"
+  DTS:VersionGUID="{7AA782C4-92C5-43E6-AD8A-286329360064}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -1174,6 +1174,1016 @@
               </outputs>
             </component>
             <component
+              refId="Package\Data Flow Task\NYC-March2023 1"
+              componentClassID="Microsoft.ExcelSource"
+              contactInfo="Excel Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Excel Source"
+              name="NYC-March2023 1"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">'March 2023$'</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mapping from parameters in the SQL command to variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\NYC-March2023 1.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output]"
+                  name="Excel Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Unique Key]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Unique Key]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Unique Key]"
+                      name="Unique Key"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Created Date]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Created Date]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Created Date]"
+                      name="Created Date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Closed Date]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Closed Date]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Closed Date]"
+                      name="Closed Date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Agency]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Agency]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Agency]"
+                      name="Agency"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Agency Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Agency Name]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Agency Name]"
+                      name="Agency Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Complaint Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Complaint Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Complaint Type]"
+                      name="Complaint Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Descriptor]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Descriptor]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Descriptor]"
+                      name="Descriptor"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Location Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Location Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Location Type]"
+                      name="Location Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Incident Zip]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Incident Zip]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Incident Zip]"
+                      name="Incident Zip"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Incident Address]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Incident Address]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Incident Address]"
+                      name="Incident Address"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Street Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Street Name]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Street Name]"
+                      name="Street Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Cross Street 1]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Cross Street 1]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Cross Street 1]"
+                      name="Cross Street 1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Cross Street 2]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Cross Street 2]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Cross Street 2]"
+                      name="Cross Street 2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Intersection Street 1]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Intersection Street 1]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Intersection Street 1]"
+                      name="Intersection Street 1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Intersection Street 2]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Intersection Street 2]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Intersection Street 2]"
+                      name="Intersection Street 2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Address Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Address Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Address Type]"
+                      name="Address Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[City]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[City]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[City]"
+                      name="City"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Landmark]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Landmark]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Landmark]"
+                      name="Landmark"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Facility Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Facility Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Facility Type]"
+                      name="Facility Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Status]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Status]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Status]"
+                      name="Status"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Due Date]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Due Date]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Due Date]"
+                      name="Due Date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Resolution Description]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Resolution Description]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Resolution Description]"
+                      name="Resolution Description"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Resolution Action Updated Date]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Resolution Action Updated Date]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Resolution Action Updated Date]"
+                      name="Resolution Action Updated Date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Community Board]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Community Board]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Community Board]"
+                      name="Community Board"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[BBL]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[BBL]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[BBL]"
+                      name="BBL"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Borough]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Borough]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Borough]"
+                      name="Borough"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[X Coordinate (State Plane)]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[X Coordinate (State Plane)]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[X Coordinate (State Plane)]"
+                      name="X Coordinate (State Plane)"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Y Coordinate (State Plane)]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Y Coordinate (State Plane)]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Y Coordinate (State Plane)]"
+                      name="Y Coordinate (State Plane)"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Open Data Channel Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Open Data Channel Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Open Data Channel Type]"
+                      name="Open Data Channel Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Park Facility Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Park Facility Name]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Park Facility Name]"
+                      name="Park Facility Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Park Borough]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Park Borough]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Park Borough]"
+                      name="Park Borough"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Vehicle Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Vehicle Type]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Vehicle Type]"
+                      name="Vehicle Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Taxi Company Borough]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Taxi Company Borough]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Taxi Company Borough]"
+                      name="Taxi Company Borough"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Taxi Pick Up Location]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Taxi Pick Up Location]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Taxi Pick Up Location]"
+                      name="Taxi Pick Up Location"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Name]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Name]"
+                      name="Bridge Highway Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Direction]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Direction]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Direction]"
+                      name="Bridge Highway Direction"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Road Ramp]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Road Ramp]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Road Ramp]"
+                      name="Road Ramp"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Segment]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Segment]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Bridge Highway Segment]"
+                      name="Bridge Highway Segment"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Latitude]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Latitude]"
+                      name="Latitude"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Longitude]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Longitude]"
+                      name="Longitude"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Location]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Location]"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Location]"
+                      name="Location"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Zip Codes]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Zip Codes]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Zip Codes]"
+                      name="Zip Codes"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Community Districts]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Community Districts]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Community Districts]"
+                      name="Community Districts"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Borough Boundaries]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Borough Boundaries]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Borough Boundaries]"
+                      name="Borough Boundaries"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[City Council Districts]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[City Council Districts]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[City Council Districts]"
+                      name="City Council Districts"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Police Precincts]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Police Precincts]"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].Columns[Police Precincts]"
+                      name="Police Precincts"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Unique Key]"
+                      dataType="r8"
+                      name="Unique Key" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Created Date]"
+                      dataType="wstr"
+                      length="255"
+                      name="Created Date" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Closed Date]"
+                      dataType="wstr"
+                      length="255"
+                      name="Closed Date" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Agency]"
+                      dataType="wstr"
+                      length="255"
+                      name="Agency" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Agency Name]"
+                      dataType="wstr"
+                      length="255"
+                      name="Agency Name" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Complaint Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Complaint Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Descriptor]"
+                      dataType="wstr"
+                      length="255"
+                      name="Descriptor" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Location Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Location Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Incident Zip]"
+                      dataType="r8"
+                      name="Incident Zip" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Incident Address]"
+                      dataType="wstr"
+                      length="255"
+                      name="Incident Address" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Street Name]"
+                      dataType="wstr"
+                      length="255"
+                      name="Street Name" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Cross Street 1]"
+                      dataType="wstr"
+                      length="255"
+                      name="Cross Street 1" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Cross Street 2]"
+                      dataType="wstr"
+                      length="255"
+                      name="Cross Street 2" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Intersection Street 1]"
+                      dataType="wstr"
+                      length="255"
+                      name="Intersection Street 1" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Intersection Street 2]"
+                      dataType="wstr"
+                      length="255"
+                      name="Intersection Street 2" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Address Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Address Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[City]"
+                      dataType="wstr"
+                      length="255"
+                      name="City" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Landmark]"
+                      dataType="wstr"
+                      length="255"
+                      name="Landmark" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Facility Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Facility Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Status]"
+                      dataType="wstr"
+                      length="255"
+                      name="Status" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Due Date]"
+                      dataType="wstr"
+                      length="255"
+                      name="Due Date" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Resolution Description]"
+                      dataType="wstr"
+                      length="255"
+                      name="Resolution Description" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Resolution Action Updated Date]"
+                      dataType="wstr"
+                      length="255"
+                      name="Resolution Action Updated Date" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Community Board]"
+                      dataType="wstr"
+                      length="255"
+                      name="Community Board" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[BBL]"
+                      dataType="r8"
+                      name="BBL" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Borough]"
+                      dataType="wstr"
+                      length="255"
+                      name="Borough" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[X Coordinate (State Plane)]"
+                      dataType="r8"
+                      name="X Coordinate (State Plane)" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Y Coordinate (State Plane)]"
+                      dataType="r8"
+                      name="Y Coordinate (State Plane)" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Open Data Channel Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Open Data Channel Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Park Facility Name]"
+                      dataType="wstr"
+                      length="255"
+                      name="Park Facility Name" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Park Borough]"
+                      dataType="wstr"
+                      length="255"
+                      name="Park Borough" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Vehicle Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Vehicle Type" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Taxi Company Borough]"
+                      dataType="wstr"
+                      length="255"
+                      name="Taxi Company Borough" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Taxi Pick Up Location]"
+                      dataType="wstr"
+                      length="255"
+                      name="Taxi Pick Up Location" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Name]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bridge Highway Name" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Direction]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bridge Highway Direction" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Road Ramp]"
+                      dataType="wstr"
+                      length="255"
+                      name="Road Ramp" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Bridge Highway Segment]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bridge Highway Segment" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                      dataType="r8"
+                      name="Latitude" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                      dataType="r8"
+                      name="Longitude" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Location]"
+                      dataType="wstr"
+                      length="255"
+                      name="Location" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Zip Codes]"
+                      dataType="r8"
+                      name="Zip Codes" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Community Districts]"
+                      dataType="r8"
+                      name="Community Districts" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Borough Boundaries]"
+                      dataType="r8"
+                      name="Borough Boundaries" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[City Council Districts]"
+                      dataType="r8"
+                      name="City Council Districts" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Output].ExternalColumns[Police Precincts]"
+                      dataType="r8"
+                      name="Police Precincts" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output]"
+                  isErrorOut="true"
+                  name="Excel Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Unique Key]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Unique Key]"
+                      name="Unique Key" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Created Date]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Created Date]"
+                      name="Created Date" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Closed Date]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Closed Date]"
+                      name="Closed Date" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Agency]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Agency]"
+                      name="Agency" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Agency Name]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Agency Name]"
+                      name="Agency Name" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Complaint Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Complaint Type]"
+                      name="Complaint Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Descriptor]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Descriptor]"
+                      name="Descriptor" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Location Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Location Type]"
+                      name="Location Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Incident Zip]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Incident Zip]"
+                      name="Incident Zip" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Incident Address]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Incident Address]"
+                      name="Incident Address" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Street Name]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Street Name]"
+                      name="Street Name" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Cross Street 1]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Cross Street 1]"
+                      name="Cross Street 1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Cross Street 2]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Cross Street 2]"
+                      name="Cross Street 2" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Intersection Street 1]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Intersection Street 1]"
+                      name="Intersection Street 1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Intersection Street 2]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Intersection Street 2]"
+                      name="Intersection Street 2" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Address Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Address Type]"
+                      name="Address Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[City]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[City]"
+                      name="City" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Landmark]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Landmark]"
+                      name="Landmark" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Facility Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Facility Type]"
+                      name="Facility Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Status]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Status]"
+                      name="Status" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Due Date]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Due Date]"
+                      name="Due Date" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Resolution Description]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Resolution Description]"
+                      name="Resolution Description" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Resolution Action Updated Date]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Resolution Action Updated Date]"
+                      name="Resolution Action Updated Date" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Community Board]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Community Board]"
+                      name="Community Board" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[BBL]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[BBL]"
+                      name="BBL" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Borough]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Borough]"
+                      name="Borough" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[X Coordinate (State Plane)]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[X Coordinate (State Plane)]"
+                      name="X Coordinate (State Plane)" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Y Coordinate (State Plane)]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Y Coordinate (State Plane)]"
+                      name="Y Coordinate (State Plane)" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Open Data Channel Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Open Data Channel Type]"
+                      name="Open Data Channel Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Park Facility Name]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Park Facility Name]"
+                      name="Park Facility Name" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Park Borough]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Park Borough]"
+                      name="Park Borough" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Vehicle Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Vehicle Type]"
+                      name="Vehicle Type" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Taxi Company Borough]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Taxi Company Borough]"
+                      name="Taxi Company Borough" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Taxi Pick Up Location]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Taxi Pick Up Location]"
+                      name="Taxi Pick Up Location" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Name]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Name]"
+                      name="Bridge Highway Name" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Direction]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Direction]"
+                      name="Bridge Highway Direction" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Road Ramp]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Road Ramp]"
+                      name="Road Ramp" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Segment]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Bridge Highway Segment]"
+                      name="Bridge Highway Segment" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Latitude]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Latitude]"
+                      name="Latitude" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Longitude]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Longitude]"
+                      name="Longitude" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Location]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Location]"
+                      name="Location" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Zip Codes]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Zip Codes]"
+                      name="Zip Codes" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Community Districts]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Community Districts]"
+                      name="Community Districts" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Borough Boundaries]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Borough Boundaries]"
+                      name="Borough Boundaries" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[City Council Districts]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[City Council Districts]"
+                      name="City Council Districts" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Police Precincts]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[Police Precincts]"
+                      name="Police Precincts" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\NYC-March2023 1.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\Data Flow Task\OLE DB Destination"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
@@ -1308,6 +2318,104 @@
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Destination 1"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination 1"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Destination 1.Connections[OleDbConnection]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\OLE DB Destination 1.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <externalMetadataColumns
+                    isUsed="True" />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Destination 1.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Data Flow Task\OLE DB Destination 1.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
@@ -1352,25 +2460,25 @@
         <NodeLayout
           Size="153.6,41.6"
           Id="Package\Data Flow Task\NYC-March2023"
-          TopLeft="291.428572048946,42.8235293742282" />
+          TopLeft="84.2857144651362,38.999999965815" />
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\Data Flow Task\Data Conversion"
-          TopLeft="285.714286322496,131.529411649415" />
+          TopLeft="80.000000170299,126.941176359319" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Excel Source Output]"
-          TopLeft="365.771429185721,84.4235293742282">
+          TopLeft="159.342857317718,80.599999965815">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,47.105882275187"
+              EndConnector="0,46.3411763935043"
               Start="0,0"
-              End="0,39.605882275187">
+              End="0,38.8411763935043">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.605882275187" />
+                    End="0,38.8411763935043" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1382,33 +2490,21 @@
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="62.142857275143,256.176470363687" />
+          TopLeft="72.1428572964304,260.764705653782" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Data Conversion Output]"
-          TopLeft="363.314286322497,173.129411649415">
+          TopLeft="157.471428733365,168.541176359319">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-215.971429047354,83.0470587142714"
+              EndConnector="0,92.2235292944631"
               Start="0,0"
-              End="-215.971429047354,75.5470587142714">
+              End="0,84.7235292944631">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,37.5235293571357" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,37.5235293571357"
-                    Point2="0,41.5235293571357"
-                    Point3="-4,41.5235293571357" />
-                  <mssgle:LineSegment
-                    End="-211.971429047354,41.5235293571357" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-211.971429047354,41.5235293571357"
-                    Point2="-215.971429047354,41.5235293571357"
-                    Point3="-215.971429047354,45.5235293571357" />
-                  <mssgle:LineSegment
-                    End="-215.971429047354,75.5470587142714" />
+                    End="0,84.7235292944631" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1417,6 +2513,14 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1"
+          TopLeft="334.285714997321,252.999999806285" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\Data Flow Task\NYC-March2023 1"
+          TopLeft="328.571429270871,38.1529411717785" />
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>

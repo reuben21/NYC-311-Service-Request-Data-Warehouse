@@ -1,11 +1,14 @@
 USE NYC_311_REQUESTS;
 GO
 
+--DROP TABLE ServiceRequests;
+--GO
+
 -- TO LOAD THE TABLE
-CREATE TABLE service_requests (
+CREATE TABLE DBO.ServiceRequests  (
     Unique_Key VARCHAR(50),
-    Created_Date TIMESTAMP,
-    Closed_Date TIMESTAMP,
+    Created_Date  VARCHAR(50),
+    Closed_Date  VARCHAR(50),
     Agency VARCHAR(50),
     Agency_Name VARCHAR(100),
     Complaint_Type VARCHAR(100),
@@ -23,9 +26,9 @@ CREATE TABLE service_requests (
     Landmark VARCHAR(100),
     Facility_Type VARCHAR(100),
     StatusName VARCHAR(50),
-    Due_Date TIMESTAMP,
+    Due_Date  VARCHAR(50),
     Resolution_Description VARCHAR(500),
-    Resolution_Action_Updated_Date TIMESTAMP,
+    Resolution_Action_Updated_Date  VARCHAR(50),
     Community_Board VARCHAR(50),
     BBL VARCHAR(50),
     Borough VARCHAR(50),
@@ -50,3 +53,20 @@ CREATE TABLE service_requests (
     City_Council_Districts VARCHAR(50),
     Police_Precincts VARCHAR(50)
 );
+GO
+
+BULK INSERT ServiceRequest
+FROM 'C:\SQL_Data\March2023.xlsx'
+WITH (
+   FORMAT = 'xlsx',
+   FIRSTROW = 2,
+   FIELDTERMINATOR = ',',
+   ROWTERMINATOR = '\n',
+   TABLOCK
+);
+
+sp_configure 'show advanced options', 1;
+GO
+
+sp_configure 'Ad Hoc Distributed Queries', 1;
+GO

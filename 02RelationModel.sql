@@ -1,3 +1,13 @@
+USE MASTER;
+GO
+
+--DROP DATABASE NYC_311_REQUESTS;
+GO
+
+CREATE DATABASE NYC_311_REQUESTS;
+GO
+
+
 USE NYC_311_REQUESTS;
 GO
 
@@ -5,27 +15,27 @@ GO
 
 CREATE TABLE Agency (
     ID INT PRIMARY KEY,
-    [Name] VARCHAR(255),
-	[Description] VARCHAR(255),
+    AgencyName VARCHAR(255),
+	AgencyDescription VARCHAR(255),
 );
 GO
 
 CREATE TABLE Complaint (
     ID INT PRIMARY KEY,
-    [Type] VARCHAR(255),
-    [Descriptor] VARCHAR(MAX)
+    ComplaintType VARCHAR(255),
+    ComplaintDescriptor VARCHAR(MAX)
 );
 GO
 
 CREATE TABLE Facility (
     ID INT PRIMARY KEY,
-    [Type] VARCHAR(255),
-    [Name] VARCHAR(255),
+    FacilityType VARCHAR(255),
+    FacilityName VARCHAR(255),
     Borough VARCHAR(255)
 );
 GO
 
-CREATE TABLE [Location] (
+CREATE TABLE ServiceRequestLocation (
     ID INT PRIMARY KEY,
     IncidentZip VARCHAR(255),
     IncidentAddress VARCHAR(255),
@@ -56,7 +66,7 @@ CREATE TABLE ServiceRequest (
     AgencyID INT,
     LocationID INT,
     FOREIGN KEY (AgencyID) REFERENCES Agency(ID),
-    FOREIGN KEY (LocationID) REFERENCES Location(ID)
+    FOREIGN KEY (LocationID) REFERENCES ServiceRequestLocation(ID)
 );
 GO
 
