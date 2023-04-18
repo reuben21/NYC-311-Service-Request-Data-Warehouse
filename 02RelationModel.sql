@@ -1,23 +1,23 @@
 USE MASTER;
 GO
 -- Indexing & Modifying Columns
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-ALTER COLUMN [Agency] VARCHAR(10);
+--ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+--ALTER COLUMN [Agency] VARCHAR(10);
 
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-ALTER COLUMN [Incident_Zip] VARCHAR(10);
+--ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+--ALTER COLUMN [Incident_Zip] VARCHAR(10);
 
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-ALTER COLUMN [Incident_Address] VARCHAR(50);
+--ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+--ALTER COLUMN [Incident_Address] VARCHAR(50);
 
-CREATE NONCLUSTERED INDEX IX_Agency
-ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Agency);
+--CREATE NONCLUSTERED INDEX IX_Agency
+--ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Agency);
 
-CREATE NONCLUSTERED INDEX IX_IncidentZip
-ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Zip)
+--CREATE NONCLUSTERED INDEX IX_IncidentZip
+--ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Zip)
 
-CREATE NONCLUSTERED INDEX IX_IncidentAddress
-ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Address);
+--CREATE NONCLUSTERED INDEX IX_IncidentAddress
+--ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Address);
 
 
 --DROP DATABASE NYC_311_REQUESTS;
@@ -144,9 +144,42 @@ GO
 EXEC Coordinates_Extract;
 GO
 
+
 SELECT * FROM Coordinates;
 GO
 
+--==============STREET ADDRESS TABLE==============--
+
+CREATE TABLE StreetAddress
+(
+    ID           INT PRIMARY KEY IDENTITY,
+    StreetName   VARCHAR(255),
+    CrossStreet1 VARCHAR(255),
+    CrossStreet2 VARCHAR(255)
+);
+GO
+
+CREATE OR ALTER PROCEDURE StreetAddress_Extract
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO StreetAddress (StreetName, CrossStreet1, CrossStreet2)
+    SELECT DISTINCT 
+              [Street_Name]
+      ,[Cross_Street_1]
+      ,[Cross_Street_2]
+    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+    
+END
+GO
+
+EXEC StreetAddress_Extract;
+
+SELECT * FROM StreetAddress;
+
+
+--==============SERVICE REQUEST LOCATION TABLE==============--
 DROP TABLE ServiceRequestLocation;
 GO
 
@@ -155,13 +188,11 @@ CREATE TABLE ServiceRequestLocation
     ID                  INT PRIMARY KEY IDENTITY,
     IncidentZip         VARCHAR(255),
     IncidentAddress     VARCHAR(255),
-    StreetName          VARCHAR(255),
-    CrossStreet1        VARCHAR(255),
-    CrossStreet2        VARCHAR(255),
     IntersectionStreet1 VARCHAR(255),
     IntersectionStreet2 VARCHAR(255),
     AddressType         VARCHAR(255),
     Landmark            VARCHAR(255),
+	StreetAddressID      INT REFERENCES StreetAddress(ID),
 	CityID INT FOREIGN KEY REFERENCES City(ID),
 	CoordinatesID INT FOREIGN KEY REFERENCES Coordinates(ID),
 );
@@ -174,32 +205,31 @@ BEGIN
 
     INSERT INTO ServiceRequestLocation (IncidentZip,
                                         IncidentAddress,
-                                        StreetName,
-                                        CrossStreet1,
-                                        CrossStreet2,
                                         IntersectionStreet1,
                                         IntersectionStreet2,
                                         AddressType,
                                         Landmark,
+										StreetAddressID,
 										CityID,
 										CoordinatesID
                                        )
     SELECT [Incident_Zip],
            [Incident_Address],
-           [Street_Name],
-           [Cross_Street_1],
-           [Cross_Street_2],
            [Intersection_Street_1],
            [Intersection_Street_2],
            [Address_Type],
            [Landmark],
+		   sa.ID,
 		   City.ID,
 		   Coordinates.ID
            
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-	INNER JOIN City ON City.City = [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023].[City]
-	INNER JOIN Coordinates ON Coordinates.Latitude = [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023].[Latitude]
-	AND Coordinates.Longitude = [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023].[Longitude]
+    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] nyc
+	INNER JOIN StreetAddress sa ON sa.StreetName = nyc.Street_Name
+	AND sa.CrossStreet1 = nyc.Cross_Street_1
+	AND sa.CrossStreet2 = nyc.Cross_Street_2
+	INNER JOIN City ON City.City = nyc.[City]
+	INNER JOIN Coordinates ON Coordinates.Latitude = nyc.[Latitude]
+	AND Coordinates.Longitude = nyc.[Longitude]
 END
 GO
 
@@ -269,7 +299,7 @@ DROP TABLE ServiceRequest;
 CREATE TABLE ServiceRequest
 (
     UniqueKey                   INT PRIMARY KEY IDENTITY,
-    ServiceKeyID                INT UNIQUE,
+    ServiceKeyID                INT Unique,
     CreatedDate                 DATETIME,
     ClosedDate                  DATETIME,
     DueDate                     DATETIME,
@@ -364,77 +394,3 @@ GO
 EXECUTE ServiceRequest_Complaint_Insert;
 GO
 
---DROP TABLE GeographicBoundary;
---GO
-
-
-
---CREATE TABLE GeographicBoundary
---(
---   ID INT PRIMARY KEY IDENTITY,
---   CommunityDistrict  BIGINT,
---   BoroughBoundaries  BIGINT,
---   CityCouncilDistrict BIGINT,
---	PolicePrecinct BIGINT
---);
---GO
-
-CREATE TABLE BridgeHighway
-(
-    ID         INT PRIMARY KEY IDENTITY,
-    BridgeHighwayName     VARCHAR(255),
-    BridgeHighwayDirection  VARCHAR(255),
-    BridgeHighwayRamp       VARCHAR(255),
-    BridgeHighwaySegment    VARCHAR(255),
-);
-GO
-
-
-
-CREATE TABLE ServiceRequest_Vehicle
-(
-    ServiceRequestID INT,
-    VehicleID        INT,
-    PRIMARY KEY (ServiceRequestID, VehicleID),
-    FOREIGN KEY (ServiceRequestID) REFERENCES ServiceRequest (UniqueKey),
-    FOREIGN KEY (VehicleID) REFERENCES Vehicle (ID)
-);
-GO
-
-CREATE TABLE ServiceRequest_Bridge
-(
-    ServiceRequestID INT,
-    BridgeID         INT,
-    PRIMARY KEY (ServiceRequestID, BridgeID),
-    FOREIGN KEY (ServiceRequestID) REFERENCES ServiceRequest (UniqueKey),
-    FOREIGN KEY (BridgeID) REFERENCES Bridge (ID)
-);
-GO
-
-
-
-DROP TABLE Vehicle;
-
-CREATE TABLE Vehicle
-(
-    ID             INT PRIMARY KEY IDENTITY,
-    VehicleType    VARCHAR(255),
-    CompanyBorough VARCHAR(255),
-    PickUpLocation VARCHAR(255)
-);
-GO
-
-CREATE OR ALTER PROCEDURE InsertVehicleData
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO Vehicle (VehicleType, CompanyBorough, PickUpLocation)
-    SELECT TOP 100000 Vehicle_Type,
-                  Borough,
-                  Incident_Address
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    WHERE Vehicle_Type IS NOT NULL
-        AND Incident_Borough IS NOT NULL
-        AND Incident_Address IS NOT NULL;
-END;
