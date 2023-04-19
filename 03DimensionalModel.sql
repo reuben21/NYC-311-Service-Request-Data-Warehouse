@@ -126,6 +126,10 @@ CREATE TABLE FactComplaint
     ComplaintTypeKey INT FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
     StatusKey INT FOREIGN KEY REFERENCES DimStatus(StatusKey),
     Total_Complaints INT,
+    Total_Resolved_Complaints INT,
+    Total_Unresolved_Complaints INT,
+    Total_Escalated_Complaints INT,
+    Total_Reassigned_Complaints INT,
     Avg_Resolution_Time_Hours FLOAT,
     Escalation_Rate FLOAT,
     CONSTRAINT PK_FactComplaint PRIMARY KEY (DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
