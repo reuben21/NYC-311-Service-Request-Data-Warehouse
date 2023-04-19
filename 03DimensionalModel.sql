@@ -20,54 +20,15 @@ CREATE TABLE DimDate		---SCD TYPE 0
 );
 GO
 
-CREATE OR ALTER PROCEDURE usp_InsertDimDateRange
-    @StartDate DATE,
-    @EndDate DATE
-AS
-BEGIN
-    DECLARE @Date DATE = @EndDate;
-    DECLARE @DateKey VARCHAR(15);
-    DECLARE @Year INT;
-    DECLARE @Quarter INT;
-    DECLARE @Month INT;
-    DECLARE @Day INT;
-    DECLARE @DayOfWeek INT;
-    DECLARE @Hour INT;
-    
-    WHILE @Date >= @StartDate
-    BEGIN
-        SET @DateKey = CONVERT(VARCHAR, FORMAT(@Date, 'yyyyMMdd'));
-        SET @Year = YEAR(@Date);
-        SET @Quarter = DATEPART(QUARTER, @Date);
-        SET @Month = MONTH(@Date);
-        SET @Day = DAY(@Date);
-        SET @DayOfWeek = DATEPART(WEEKDAY, @Date);
-        
-        DECLARE @HourCounter INT = 1;
-        WHILE @HourCounter <= 24
-        BEGIN
-            SET @Hour = @HourCounter - 1;
-            SET @DateKey = @DateKey + 1;
-            
-            INSERT INTO DimDate (DateKey, aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek, aHour)
-            VALUES (CAST( (@DateKey+CAST(@Hour as varchar)) as INT ), @Date, @Year, @Quarter, @Month, @Day, @DayOfWeek, @Hour);
-            
-            SET @HourCounter = @HourCounter + 1;
-        END
-        
-        SET @Date = DATEADD(DAY, -1, @Date);
-    END
-END
-
-
-
-
-
-EXEC usp_InsertDimDateRange '2023-01-01', '2023-04-01';
+CREATE TABLE DimTime 
+(
+   TimeKey     INT PRIMARY KEY,
+   aTime       TIME(0) NOT NULL,
+   anHour      INT NOT NULL,
+   aMinute     INT NOT NULL,
+);
 GO
 
-SELECT * FROM DimDate order by datekey;
-GO
 
 -- ======= DimLocation ============
 
@@ -107,7 +68,7 @@ GO
 CREATE TABLE DimStatus 
 (
 	StatusKey							INT PRIMARY KEY NOT NULL,
-    StatusBusinessKey                   INT NOT NULL,
+    StatusID                            INT NOT NULL,
 	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
 	StatusStartDate						DATETIME NULL,
@@ -135,11 +96,75 @@ CREATE TABLE FactComplaint
     CONSTRAINT PK_FactComplaint PRIMARY KEY (DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 );
 
+GO
+-----================= ETL ======================-----
+CREATE OR ALTER PROCEDURE DimDateInsertion
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Create a temporary table to hold the date range
+    DECLARE @DateTable TABLE (aDate DATE);
+    
+    -- Insert the range of dates into the temporary table
+    WHILE @StartDate <= @EndDate
+    BEGIN
+        INSERT INTO @DateTable (aDate) VALUES (@StartDate);
+        SET @StartDate = DATEADD(day, 1, @StartDate);
+    END
+    
+    -- Insert the dates from the temporary table into the DimDate table
+    INSERT INTO DimDate (DateKey, aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek)
+    SELECT 
+        CONVERT(INT, CONVERT(VARCHAR(8), aDate, 112)),
+        aDate,
+        YEAR(aDate),
+        DATEPART(QUARTER, aDate),
+        MONTH(aDate),
+        DAY(aDate),
+        DATEPART(WEEKDAY, aDate)
+    FROM @DateTable;
+END
 
 
+EXEC DimDateInsertion '2023-01-01', '2023-04-01';
+GO
 
+SELECT * FROM DimDate order by datekey;
+GO
 
+----================ PROCEDURE TO INSERT TIME ==================----
+CREATE OR ALTER PROCEDURE PopulateDimTimeForDay
+AS
+BEGIN
+    DECLARE @startTime TIME(0) = '00:00';
+    DECLARE @endTime TIME(0) = '23:59';
+    DECLARE @increment INT = 1;
+    DECLARE @timeDim TABLE (TimeKey INT PRIMARY KEY, aTime TIME(0), anHour INT, aMinute INT, aSecond INT);
 
+    WHILE @startTime <= @endTime
+    BEGIN
+        INSERT INTO @timeDim (TimeKey, aTime, anHour, aMinute, aSecond)
+        VALUES (CONVERT(INT,REPLACE(CONVERT(VARCHAR(8), @startTime, 108), ':', '')),
+                @startTime,
+                DATEPART(HOUR, @startTime),
+                DATEPART(MINUTE, @startTime),
+                DATEPART(SECOND, @startTime));
+
+        SET @startTime = DATEADD(SECOND, @increment, @startTime);
+    END
+
+    INSERT INTO DimTime (TimeKey, aTime, anHour, aMinute, aSecond)
+    SELECT TimeKey, aTime, anHour, aMinute, aSecond FROM @timeDim;
+END
+GO
+
+EXEC PopulateDimTimeForDay;
+GO
+
+SELECT * FROM DimTime;
 
 
 
