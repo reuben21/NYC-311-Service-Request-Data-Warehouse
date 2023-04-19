@@ -3,24 +3,25 @@ DROP DATABASE NYC_311_REQUESTS_DM;
 USE NYC_311_REQUESTS_DM;
 GO
 
-DROP TABLE DimDate;
--- Dimensional Modelling
-CREATE TABLE
-    DimDate (
-        DateKey INT PRIMARY KEY IDENTITY,
-        aDate DATE,
-        aYear INT,
-        aQuarter INT,
-        aMonth INT,
-        aDay INT,
-        aDayOfWeek INT,
-        aHour INT
-    );
 
+-- ================================ DIMESNIONAL MODEL =======================================
+
+-- ======= DimDate ============
+
+CREATE TABLE DimDate		---SCD TYPE 0
+(
+   DateKey		INT NOT NULL,
+   aDate		DATE NOT NULL,
+   aYear		INT NOT NULL,
+   aQuarter		INT NOT NULL,
+   aMonth		INT NOT NULL,
+   aDay			INT NOT NULL,
+   aDayOfWeek   INT NOT NULL,
+   aHour		INT NOT NULL
+);
 GO
 
 CREATE OR ALTER PROCEDURE InsertDimDateFromRange (  @StartDate DATE, @EndDate DATE)
-  
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -40,8 +41,10 @@ BEGIN
         INSERT INTO @Hours VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24)
 
         -- Insert or update a row for each hour in the @Hours table
-        INSERT INTO DimDate (aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek, aHour)
-        SELECT @CurrentDate AS cdate,
+        INSERT INTO DimDate (DateKey, aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek, aHour)
+        SELECT 
+			   CAST( YEAR(@CurrentDate) * 10000 + MONTH(@CurrentDate) * 100 + DAY(@CurrentDate) AS INT),
+			   @CurrentDate AS cdate,
                @Year AS cyear,
                @Quarter AS cquarter,
                @Month AS cmonth,
@@ -53,56 +56,69 @@ BEGIN
         SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate)
     END
 END
-
+GO
 
 EXEC InsertDimDateFromRange '2023-01-01', '2023-04-01';
 GO
 
-SELECT COUNT(*) FROM DimDate;
+SELECT * FROM DimDate order by datekey;
 GO
 
-CREATE TABLE DimLocation (
-	LocationKey INT PRIMARY KEY,
-    IncidentZip VARCHAR(10),
-	IncidentAddress VARCHAR(255),
-    CityCouncilDistrict VARCHAR(50),
-    PolicePrecinct VARCHAR(50),
-    City VARCHAR(50),
-    Borough VARCHAR(50),
-    LocationType VARCHAR(255)
+
+
+-- ======= DimLocation ============
+
+
+CREATE TABLE DimLocation 
+(
+	LocationKey			INT PRIMARY KEY NOT NULL,
+    IncidentZip			VARCHAR(255)	NULL,
+	IncidentAddress		VARCHAR(255)    NULL,
+    CityCouncilDistrict INT				NULL,
+    PolicePrecinct		VARCHAR(255)	NULL,
+    City				VARCHAR(255)	NULL,
+    Borough				VARCHAR(50)	    NULL,
+    LocationType		VARCHAR(255)	NULL
 );
 GO
 
-CREATE TABLE DimAgency (
-	AgencyKey INT PRIMARY KEY,
-	AgencyName VARCHAR(255),
-	AgencyDescription VARCHAR(MAX)
+
+-- ======= DimAgency ============
+
+CREATE TABLE DimAgency 
+(
+	AgencyKey			INT PRIMARY KEY NOT NULL,
+	AgencyName			VARCHAR(255) NULL,
+	AgencyDescription	VARCHAR(255) NULL
 );
 GO
 
-CREATE TABLE DimComplaintType (
-	ComplaintTypeKey INT PRIMARY KEY,
-	ComplaintType VARCHAR(255),
-	ComplaintDescription VARCHAR(MAX),
-	ComplaintLocationType VARCHAR(255),
-	ComplaintReceivedDate DATE,
+CREATE TABLE DimComplaintType 
+(
+	ComplaintTypeKey		INT PRIMARY KEY NOT NULL,
+	ComplaintType			VARCHAR(255) NULL,
+	ComplaintDescription	VARCHAR(MAX) NULL,
+	ComplaintLocationType	VARCHAR(255) NULL,
+	ComplaintReceivedDate	DATETIME NULL,
 );
 GO
 
-CREATE TABLE DimStatus (
-	StatusKey INT PRIMARY KEY,
-	StatusName VARCHAR(255),
-    StatusResolutionDescription VARCHAR(MAX),
-	StatusResolutionActionUpdatedDate DATETIME,
-	StatusStartDate DATE,
-    StatusEndDate DATE,
-    StatusDurationDays INT
+CREATE TABLE DimStatus 
+(
+	StatusKey							INT PRIMARY KEY NOT NULL,
+	StatusName							VARCHAR(255) NULL,
+    StatusResolutionDescription			VARCHAR(MAX) NULL,
+	StatusResolutionActionUpdatedDate	DATETIME NULL,
+	StatusStartDate						DATE NULL,
+    StatusEndDate						DATE NULL,
+    StatusDurationDays					INT NULL
 );
 GO
 
 --Fact Table:
 
-CREATE TABLE FactComplaint (
+CREATE TABLE FactComplaint 
+(
     DateKey INT FOREIGN KEY REFERENCES DimDate(DateKey),
     LocationKey INT FOREIGN KEY REFERENCES DimLocation(LocationKey),
     AgencyKey INT FOREIGN KEY REFERENCES DimAgency(AgencyKey),
@@ -138,7 +154,7 @@ SELECT
     DimDate.chour AS Hour,
     DimLocation.LocationIncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
-    COUNT(CASE WHEN DimStatus.StatusName = 'Resolved' THEN 1 ELSE NULL END) AS Total_Resolved_Complaints
+    COUNT(CASE WHEN DimStatus.StatusName = 'Closed' THEN 1 ELSE NULL END) AS Total_Resolved_Complaints
 FROM 
     FactComplaint
     JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
@@ -157,7 +173,7 @@ SELECT
     DimDate.chour AS Hour,
     DimLocation.LocationIncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
-    COUNT(CASE WHEN DimStatus.StatusName NOT IN ('Resolved', 'Closed') THEN 1 ELSE NULL END) AS Total_Unresolved_Complaints
+    COUNT(CASE WHEN DimStatus.StatusName NOT IN ('Closed') THEN 1 ELSE NULL END) AS Total_Unresolved_Complaints
 FROM 
     FactComplaint
     JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
@@ -187,17 +203,3 @@ GROUP BY
     DimDate.chour,
     DimLocation.LocationIncidentZip,
     DimAgency.AgencyName
-
-
-/*
-	Unnecessary Dimensions:
-*/
--- PolicePrecinctKey INT FOREIGN KEY (PolicePrecinctKey) REFERENCES DimPolicePrecinct(PolicePrecinctKey),
-	-- CityCouncilDistrictKey INT FOREIGN KEY (CityCouncilDistrictKey) REFERENCES DimCityCouncilDistrict(CityCouncilDistrictKey),
-	--  BoroughBoundaryKey INT FOREIGN KEY (BoroughBoundaryKey) REFERENCES DimBoroughBoundary(BoroughBoundaryKey)
-	
-	
---    Total_Resolved_Complaints INT,
---     Total_Unresolved_Complaints INT,
---     Total_Escalated_Complaints INT,
---     Total_Reassigned_Complaints INT,
