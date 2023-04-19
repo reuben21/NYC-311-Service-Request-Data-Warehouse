@@ -5,16 +5,18 @@ GO
 
 DROP TABLE DimDate;
 -- Dimensional Modelling
-CREATE TABLE DimDate (
-	DateKey INT PRIMARY KEY IDENTITY,
-	aDate DATE,
-	aYear INT,
-	aQuarter INT,
-	aMonth INT,
-	aDay INT,
-	aDayOfWeek INT,
-	aHour INT
-	);
+CREATE TABLE
+    DimDate (
+        DateKey INT PRIMARY KEY IDENTITY,
+        aDate DATE,
+        aYear INT,
+        aQuarter INT,
+        aMonth INT,
+        aDay INT,
+        aDayOfWeek INT,
+        aHour INT
+    );
+
 GO
 
 CREATE OR ALTER PROCEDURE InsertDimDateFromRange (  @StartDate DATE, @EndDate DATE)
@@ -63,6 +65,9 @@ CREATE TABLE DimLocation (
 	LocationKey INT PRIMARY KEY,
     IncidentZip VARCHAR(10),
 	IncidentAddress VARCHAR(255),
+    CityCouncilDistrict VARCHAR(50),
+    PolicePrecinct VARCHAR(50),
+    City VARCHAR(50),
     Borough VARCHAR(50),
     LocationType VARCHAR(255)
 );
