@@ -76,7 +76,7 @@ END
 EXEC InsertDimDateFromRange '2023-01-01', '2023-04-01';
 GO
 
-SELECT * FROM DimDate;
+SELECT COUNT(*) FROM DimDate;
 GO
 
 CREATE TABLE DimLocation (
