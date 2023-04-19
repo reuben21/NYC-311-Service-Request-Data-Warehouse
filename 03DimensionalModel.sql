@@ -17,7 +17,6 @@ CREATE TABLE DimDate		---SCD TYPE 0
    aMonth		INT NOT NULL,
    aDay			INT NOT NULL,
    aDayOfWeek   INT NOT NULL,
-   aHour		INT NOT NULL
 );
 GO
 
@@ -111,9 +110,8 @@ CREATE TABLE DimStatus
     StatusBusinessKey                   INT NOT NULL,
 	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
-	StatusResolutionActionUpdatedDate	DATETIME NULL,
-	StatusStartDate						DATE NULL,
-    StatusEndDate						DATE NULL,
+	StatusStartDate						DATETIME NULL,
+    StatusEndDate						DATETIME NULL, ---> StatusResolutionActionUpdatedDate
     StatusDurationDays					INT NULL
 );
 GO

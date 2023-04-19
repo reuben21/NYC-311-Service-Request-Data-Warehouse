@@ -1,0 +1,61 @@
+-- ================================ STAGE TABLE =======================================
+
+-- ================= AGENCY TABLE =====================
+
+CREATE TABLE Stage_Agency
+(
+    AgencyName        VARCHAR(255),
+    AgencyDescription VARCHAR(255)
+);
+GO
+
+-- ================= COMPLAINT TABLE =====================
+
+-- DROP TABLE Stage_ComplaintType;
+CREATE TABLE Stage_ComplaintType
+(
+    ComplaintType       VARCHAR(255),
+    ComplaintDescriptor VARCHAR(MAX)
+);
+GO
+
+CREATE OR ALTER PROCEDURE Extract_Agency
+AS
+BEGIN
+    INSERT INTO Stage_Agency( AgencyName, AgencyDescription)
+    SELECT AgencyName, AgencyDescription
+    FROM [NYC_311].[dbo].Agency;
+END;
+
+EXEC Extract_Agency;
+
+SELECT * FROM Stage_Agency;
+GO
+
+
+
+
+
+
+CREATE PROCEDURE Extract_ComplaintType
+AS
+BEGIN
+    INSERT INTO Stage_ComplaintType(ComplaintType, ComplaintDescriptor)
+    SELECT ComplaintType, ComplaintDescriptor
+    FROM [NYC_311].[dbo].Complaint;
+END;
+GO
+
+EXEC Extract_ComplaintType;
+GO
+
+SELECT * FROM Stage_ComplaintType;
+GO
+
+
+
+
+
+
+
+
