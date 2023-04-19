@@ -3,10 +3,10 @@ DROP DATABASE NYC_311_REQUESTS_DM;
 USE NYC_311_REQUESTS_DM;
 GO
 
-DROP TABLE DimDate;
+-- DROP TABLE DimDate;
 -- Dimensional Modelling
 CREATE TABLE DimDate (
-   DateKey INT PRIMARY KEY,
+   DateKey INT PRIMARY KEY IDENTITY(1,1),
    cdate DATE,
    cyear INT,
    cquarter INT,
@@ -28,50 +28,30 @@ BEGIN
 
     WHILE @CurrentDate <= @EndDate
     BEGIN
-        DECLARE @DateKey INT = CAST(FORMAT(@CurrentDate, 'yyyyMMdd') AS INT)
         DECLARE @Year INT = YEAR(@CurrentDate)
         DECLARE @Quarter INT = DATEPART(QUARTER, @CurrentDate)
         DECLARE @Month INT = MONTH(@CurrentDate)
         DECLARE @Day INT = DAY(@CurrentDate)
         DECLARE @DayOfWeek INT = DATEPART(WEEKDAY, @CurrentDate)
 
-        -- Loop through hours 1-24 and insert or update a row for each hour
-        DECLARE @Hour INT = 1
-        WHILE @Hour <= 24
-        BEGIN
-            MERGE INTO DimDate WITH (HOLDLOCK) AS target
-            USING (
-                SELECT @DateKey + @Hour AS DateKey,
-                       CAST(@CurrentDate AS DATETIME) AS cdate,
-                       @Year AS cyear,
-                       @Quarter AS cquarter,
-                       @Month AS cmonth,
-                       @Day AS cday,
-                       @DayOfWeek AS day_of_week,
-                       @Hour AS chour
-            ) AS source
-            ON (target.DateKey = source.DateKey)
-            WHEN MATCHED THEN
-                UPDATE SET
-                    cdate = source.cdate,
-                    cyear = source.cyear,
-                    cquarter = source.cquarter,
-                    cmonth = source.cmonth,
-                    cday = source.cday,
-                    day_of_week = source.day_of_week,
-                    chour = source.chour
-            WHEN NOT MATCHED THEN
-                INSERT (DateKey, cdate, cyear, cquarter, cmonth, cday, day_of_week, chour)
-                VALUES (source.DateKey, source.cdate, source.cyear, source.cquarter, source.cmonth, source.cday, source.day_of_week, source.chour);
+        -- Generate a list of 24 hours for the current date
+        DECLARE @Hours TABLE (Hour INT)
+        INSERT INTO @Hours VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24)
 
-            SET @Hour = @Hour + 1
-        END
+        -- Insert or update a row for each hour in the @Hours table
+        INSERT INTO DimDate (cdate, cyear, cquarter, cmonth, cday, day_of_week, chour)
+        SELECT @CurrentDate AS cdate,
+               @Year AS cyear,
+               @Quarter AS cquarter,
+               @Month AS cmonth,
+               @Day AS cday,
+               @DayOfWeek AS day_of_week,
+               Hour AS chour
+        FROM @Hours
 
         SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate)
     END
 END
-
-
 
 EXEC InsertDimDateFromRange '2023-01-01', '2023-04-01';
 GO
