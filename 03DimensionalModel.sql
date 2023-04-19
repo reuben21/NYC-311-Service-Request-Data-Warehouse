@@ -7,10 +7,10 @@ GO
 -- ================================ DIMESNIONAL MODEL =======================================
 
 -- ======= DimDate ============
-
+DROP TABLE DIMDATE;
 CREATE TABLE DimDate		---SCD TYPE 0
 (
-   DateKey		INT NOT NULL,
+   DateKey		INT PRIMARY KEY,
    aDate		DATE NOT NULL,
    aYear		INT NOT NULL,
    aQuarter		INT NOT NULL,
@@ -21,50 +21,54 @@ CREATE TABLE DimDate		---SCD TYPE 0
 );
 GO
 
-CREATE OR ALTER PROCEDURE InsertDimDateFromRange (  @StartDate DATE, @EndDate DATE)
+CREATE OR ALTER PROCEDURE usp_InsertDimDateRange
+    @StartDate DATE,
+    @EndDate DATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @CurrentDate DATE = @StartDate
-
-    WHILE @CurrentDate <= @EndDate
+    DECLARE @Date DATE = @EndDate;
+    DECLARE @DateKey VARCHAR(15);
+    DECLARE @Year INT;
+    DECLARE @Quarter INT;
+    DECLARE @Month INT;
+    DECLARE @Day INT;
+    DECLARE @DayOfWeek INT;
+    DECLARE @Hour INT;
+    
+    WHILE @Date >= @StartDate
     BEGIN
-        DECLARE @Year INT = YEAR(@CurrentDate)
-        DECLARE @Quarter INT = DATEPART(QUARTER, @CurrentDate)
-        DECLARE @Month INT = MONTH(@CurrentDate)
-        DECLARE @Day INT = DAY(@CurrentDate)
-        DECLARE @DayOfWeek INT = DATEPART(WEEKDAY, @CurrentDate)
-
-        -- Generate a list of 24 hours for the current date
-        DECLARE @Hours TABLE (Hour INT)
-        INSERT INTO @Hours VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24)
-
-        -- Insert or update a row for each hour in the @Hours table
-        INSERT INTO DimDate (DateKey, aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek, aHour)
-        SELECT 
-			   CAST( YEAR(@CurrentDate) * 10000 + MONTH(@CurrentDate) * 100 + DAY(@CurrentDate) AS INT),
-			   @CurrentDate AS cdate,
-               @Year AS cyear,
-               @Quarter AS cquarter,
-               @Month AS cmonth,
-               @Day AS cday,
-               @DayOfWeek AS day_of_week,
-               Hour AS chour
-        FROM @Hours
-
-        SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate)
+        SET @DateKey = CONVERT(VARCHAR, FORMAT(@Date, 'yyyyMMdd'));
+        SET @Year = YEAR(@Date);
+        SET @Quarter = DATEPART(QUARTER, @Date);
+        SET @Month = MONTH(@Date);
+        SET @Day = DAY(@Date);
+        SET @DayOfWeek = DATEPART(WEEKDAY, @Date);
+        
+        DECLARE @HourCounter INT = 1;
+        WHILE @HourCounter <= 24
+        BEGIN
+            SET @Hour = @HourCounter - 1;
+            SET @DateKey = @DateKey + 1;
+            
+            INSERT INTO DimDate (DateKey, aDate, aYear, aQuarter, aMonth, aDay, aDayOfWeek, aHour)
+            VALUES (CAST( (@DateKey+CAST(@Hour as varchar)) as INT ), @Date, @Year, @Quarter, @Month, @Day, @DayOfWeek, @Hour);
+            
+            SET @HourCounter = @HourCounter + 1;
+        END
+        
+        SET @Date = DATEADD(DAY, -1, @Date);
     END
 END
-GO
 
-EXEC InsertDimDateFromRange '2023-01-01', '2023-04-01';
+
+
+
+
+EXEC usp_InsertDimDateRange '2023-01-01', '2023-04-01';
 GO
 
 SELECT * FROM DimDate order by datekey;
 GO
-
-
 
 -- ======= DimLocation ============
 
@@ -97,16 +101,15 @@ CREATE TABLE DimComplaintType
 (
 	ComplaintTypeKey		INT PRIMARY KEY NOT NULL,
 	ComplaintType			VARCHAR(255) NULL,
-	ComplaintDescription	VARCHAR(MAX) NULL,
-	ComplaintLocationType	VARCHAR(255) NULL,
-	ComplaintReceivedDate	DATETIME NULL,
+	ComplaintDescription	VARCHAR(MAX) NULL
 );
 GO
 
 CREATE TABLE DimStatus 
 (
 	StatusKey							INT PRIMARY KEY NOT NULL,
-	StatusName							VARCHAR(255) NULL,
+    StatusBusinessKey                   INT NOT NULL,
+	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
 	StatusResolutionActionUpdatedDate	DATETIME NULL,
 	StatusStartDate						DATE NULL,
@@ -130,11 +133,39 @@ CREATE TABLE FactComplaint
     CONSTRAINT PK_FactComplaint PRIMARY KEY (DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- HOW TO GET THE Total_Complaints PER ROW:
 SELECT 
     DimDate.cdate AS Date,
     DimDate.chour AS Hour,
-    DimLocation.LocationIncidentZip AS ZipCode,
+    DimLocation.IncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
     COUNT(*) AS Total_Complaints
 FROM 
@@ -145,14 +176,14 @@ FROM
 GROUP BY 
     DimDate.cdate,
     DimDate.chour,
-    DimLocation.LocationIncidentZip,
+    DimLocation.IncidentZip,
     DimAgency.AgencyName
 
 -- HOW TO GET THE Total_Resolved_Complaints PER ROW:
 SELECT 
     DimDate.cdate AS Date,
     DimDate.chour AS Hour,
-    DimLocation.LocationIncidentZip AS ZipCode,
+    DimLocation.IncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
     COUNT(CASE WHEN DimStatus.StatusName = 'Closed' THEN 1 ELSE NULL END) AS Total_Resolved_Complaints
 FROM 
@@ -164,14 +195,14 @@ FROM
 GROUP BY 
     DimDate.cdate,
     DimDate.chour,
-    DimLocation.LocationIncidentZip,
+    DimLocation.IncidentZip,
     DimAgency.AgencyName
 
 -- HOW TO GET THE Total_Unresolved_Complaints PER ROW:
 SELECT 
     DimDate.cdate AS Date,
     DimDate.chour AS Hour,
-    DimLocation.LocationIncidentZip AS ZipCode,
+    DimLocation.IncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
     COUNT(CASE WHEN DimStatus.StatusName NOT IN ('Closed') THEN 1 ELSE NULL END) AS Total_Unresolved_Complaints
 FROM 
@@ -183,14 +214,14 @@ FROM
 GROUP BY 
     DimDate.cdate,
     DimDate.chour,
-    DimLocation.LocationIncidentZip,
+    DimLocation.IncidentZip,
     DimAgency.AgencyName
 
 -- HOW TO GET THE Total_Escalated_Complaints PER ROW:
 SELECT 
     DimDate.cdate AS Date,
     DimDate.chour AS Hour,
-    DimLocation.LocationIncidentZip AS ZipCode,
+    DimLocation.IncidentZip AS ZipCode,
     DimAgency.AgencyName AS Agency,
     COUNT(CASE WHEN FactComplaint.Total_Escalated_Complaints > 0 THEN 1 ELSE NULL END) AS Total_Escalated_Complaints
 FROM 
