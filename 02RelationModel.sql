@@ -157,8 +157,6 @@ CREATE TABLE IncidentLocations
     ID                  INT PRIMARY KEY IDENTITY,
     IncidentZip         VARCHAR(255),
     IncidentAddress     VARCHAR(255),
-    IntersectionStreet1 VARCHAR(255),
-    IntersectionStreet2 VARCHAR(255),
     AddressType         VARCHAR(255),
     Landmark            VARCHAR(255),
     StreetAddressID     INT REFERENCES StreetAddress (ID),
@@ -170,12 +168,10 @@ CREATE OR ALTER PROCEDURE IncidentLocations_Extract AS
 BEGIN
 
     SET NOCOUNT ON;
-    INSERT INTO IncidentLocations (IncidentZip, IncidentAddress, IntersectionStreet1, IntersectionStreet2,
+    INSERT INTO IncidentLocations (IncidentZip, IncidentAddress, 
                                    AddressType, Landmark, StreetAddressID, CoordinatesID)
     SELECT [Incident_Zip]
          , [Incident_Address]
-         , [Intersection_Street_1]
-         , [Intersection_Street_2]
          , [Address_Type]
          , [Landmark]
          , sa.ID
