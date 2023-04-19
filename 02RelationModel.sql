@@ -372,6 +372,8 @@ GO
 EXEC ServiceRequests_Extract;
 GO
 
+USE NYC_311;
+
 SELECT *
 FROM ServiceRequest;
 GO
