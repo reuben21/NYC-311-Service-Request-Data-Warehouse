@@ -6,7 +6,7 @@ GO
 DROP TABLE DimDate;
 -- Dimensional Modelling
 CREATE TABLE DimDate (
-   DateKey INT PRIMARY KEY IDENTITY,
+   DateKey INT PRIMARY KEY,
    cdate DATE,
    cyear INT,
    cquarter INT,
@@ -35,12 +35,34 @@ BEGIN
         DECLARE @Day INT = DAY(@CurrentDate)
         DECLARE @DayOfWeek INT = DATEPART(WEEKDAY, @CurrentDate)
 
-        -- Loop through hours 1-24 and insert a row for each hour
+        -- Loop through hours 1-24 and insert or update a row for each hour
         DECLARE @Hour INT = 1
         WHILE @Hour <= 24
         BEGIN
-            INSERT INTO DimDate ( cdate, cyear, cquarter, cmonth, cday, day_of_week, chour)
-            VALUES ( CAST(@CurrentDate AS DATETIME), @Year, @Quarter, @Month, @Day, @DayOfWeek, @Hour)
+            MERGE INTO DimDate WITH (HOLDLOCK) AS target
+            USING (
+                SELECT @DateKey + @Hour AS DateKey,
+                       CAST(@CurrentDate AS DATETIME) AS cdate,
+                       @Year AS cyear,
+                       @Quarter AS cquarter,
+                       @Month AS cmonth,
+                       @Day AS cday,
+                       @DayOfWeek AS day_of_week,
+                       @Hour AS chour
+            ) AS source
+            ON (target.DateKey = source.DateKey)
+            WHEN MATCHED THEN
+                UPDATE SET
+                    cdate = source.cdate,
+                    cyear = source.cyear,
+                    cquarter = source.cquarter,
+                    cmonth = source.cmonth,
+                    cday = source.cday,
+                    day_of_week = source.day_of_week,
+                    chour = source.chour
+            WHEN NOT MATCHED THEN
+                INSERT (DateKey, cdate, cyear, cquarter, cmonth, cday, day_of_week, chour)
+                VALUES (source.DateKey, source.cdate, source.cyear, source.cquarter, source.cmonth, source.cday, source.day_of_week, source.chour);
 
             SET @Hour = @Hour + 1
         END
@@ -48,7 +70,7 @@ BEGIN
         SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate)
     END
 END
-GO
+
 
 
 EXEC InsertDimDateFromRange '2023-01-01', '2023-04-01';
