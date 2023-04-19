@@ -2,37 +2,13 @@ USE MASTER;
 GO
 
 
--- Indexing & Modifying Columns Dataset Columns
---
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    ADD CONSTRAINT PK_Unique_Key PRIMARY KEY (Unique_Key);
-GO
 
---
-
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    ALTER COLUMN [Agency] VARCHAR(10);
-GO
-
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    ALTER COLUMN [Incident_Zip] VARCHAR(10);
-GO
-
-ALTER TABLE [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    ALTER COLUMN [Incident_Address] VARCHAR(50);
-GO
-
-CREATE NONCLUSTERED INDEX IX_Agency
-    ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Agency);
-CREATE NONCLUSTERED INDEX IX_IncidentZip
-    ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Zip)
-CREATE NONCLUSTERED INDEX IX_IncidentAddress
-    ON [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] (Incident_Address);
 --DROP DATABASE NYC_311_REQUESTS;
 --GO
 
 CREATE DATABASE NYC_311;
 GO
+
 USE NYC_311;
 GO
 -- RELATIONAL MODEL
@@ -77,9 +53,6 @@ CREATE TABLE Complaint
 );
 GO
 
-CREATE NONCLUSTERED INDEX IDX_Complaint
-    ON Complaint (ComplaintType);
-GO
 
 CREATE OR ALTER PROCEDURE Complaint_Extract AS
 BEGIN
@@ -172,14 +145,14 @@ BEGIN
 END
 GO
 EXEC StreetAddress_Extract;
-
+GO
 SELECT *
 FROM StreetAddress;
 -- =  =  =  =  =  =  =  =  =  =  =  =  =  = SERVICE REQUEST LOCATION TABLE =  =  =  =  =  =  =  =  =  =  =  =  =  = --
 
-DROP TABLE ServiceRequestLocation;
+DROP TABLE IncidentLocations;
 GO
-CREATE TABLE ServiceRequestLocation
+CREATE TABLE IncidentLocations
 (
     ID                  INT PRIMARY KEY IDENTITY,
     IncidentZip         VARCHAR(255),
@@ -189,17 +162,16 @@ CREATE TABLE ServiceRequestLocation
     AddressType         VARCHAR(255),
     Landmark            VARCHAR(255),
     StreetAddressID     INT REFERENCES StreetAddress (ID),
-    CityID              INT FOREIGN KEY REFERENCES City (ID),
     CoordinatesID       INT FOREIGN KEY REFERENCES Coordinates (ID),
 );
 GO
 
-CREATE OR ALTER PROCEDURE ServiceRequestLocation_Extract AS
+CREATE OR ALTER PROCEDURE IncidentLocations_Extract AS
 BEGIN
 
     SET NOCOUNT ON;
-    INSERT INTO ServiceRequestLocation (IncidentZip, IncidentAddress, IntersectionStreet1, IntersectionStreet2,
-                                        AddressType, Landmark, StreetAddressID, CityID, CoordinatesID)
+    INSERT INTO IncidentLocations (IncidentZip, IncidentAddress, IntersectionStreet1, IntersectionStreet2,
+                                   AddressType, Landmark, StreetAddressID, CoordinatesID)
     SELECT [Incident_Zip]
          , [Incident_Address]
          , [Intersection_Street_1]
@@ -207,66 +179,114 @@ BEGIN
          , [Address_Type]
          , [Landmark]
          , sa.ID
-         , City.ID
          , Coordinates.ID
     FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] nyc
-             INNER JOIN StreetAddress sa
-                        ON sa.StreetName = nyc.Street_Name AND sa.CrossStreet1 = nyc.Cross_Street_1 AND
-                           sa.CrossStreet2 = nyc.Cross_Street_2
-             INNER JOIN City
-                        ON City.CityName = nyc.[City]
-             INNER JOIN Coordinates
-                        ON Coordinates.Latitude = nyc.[Latitude] AND Coordinates.Longitude = nyc.[Longitude]
+             LEFT JOIN StreetAddress sa
+                       ON sa.StreetName = nyc.Street_Name AND sa.CrossStreet1 = nyc.Cross_Street_1 AND
+                          sa.CrossStreet2 = nyc.Cross_Street_2
+             LEFT JOIN Coordinates
+                       ON Coordinates.Latitude = nyc.[Latitude] AND Coordinates.Longitude = nyc.[Longitude]
 END
 GO
 
-CREATE NONCLUSTERED INDEX idx_ServiceRequestLocation
-    ON ServiceRequestLocation (IncidentZip, IncidentAddress);
-EXEC ServiceRequestLocation_Extract;
+CREATE NONCLUSTERED INDEX idx_IncidentLocations
+    ON IncidentLocations (IncidentZip, IncidentAddress);
+GO
+
+EXEC IncidentLocations_Extract;
 GO
 
 SELECT *
-FROM dbo.ServiceRequestLocation;
+FROM dbo.IncidentLocations;
 GO
---- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = Geography Boundary =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
+--- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = Borough Boundary =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
 
-CREATE TABLE GeographicBoundary
+DROP TABLE BoroughBoundary;
+
+CREATE TABLE BoroughBoundary
 (
-    ID             INT PRIMARY KEY IDENTITY,
-    GeographicType VARCHAR(50),
-    Number         BIGINT
+
+    BoroughName  VARCHAR(50),
+    BoroughValue INT PRIMARY KEY,
 );
 GO
 
-CREATE OR ALTER PROCEDURE GeographicData_Extraction AS
+CREATE OR ALTER PROCEDURE BoroughBoundary_Extraction
+AS
 BEGIN
-    INSERT INTO GeographicBoundary (GeographicType, Number)
-    SELECT DISTINCT 'Community District'
-                  , Community_Districts
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    UNION ALL
-    SELECT DISTINCT 'Borough Boundary'
-                  , Borough_Boundaries
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    UNION ALL
-    SELECT DISTINCT 'City Council District'
-                  , City_Council_Districts
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
-    UNION ALL
-    SELECT DISTINCT 'Police Precinct'
-                  , Police_Precincts
-    FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023]
+    SET NOCOUNT ON;
+
+    INSERT INTO BoroughBoundary (BoroughName, BoroughValue) VALUES ('Bronx', 2);
+    INSERT INTO BoroughBoundary (BoroughName, BoroughValue) VALUES ('Brooklyn', 3);
+    INSERT INTO BoroughBoundary (BoroughName, BoroughValue) VALUES ('Manhattan', 1);
+    INSERT INTO BoroughBoundary (BoroughName, BoroughValue) VALUES ('Queens', 4);
+    INSERT INTO BoroughBoundary (BoroughName, BoroughValue) VALUES ('Staten Island', 5);
+
 END
 GO
-EXEC GeographicData_Extraction;
-GO
 
-CREATE NONCLUSTERED INDEX idx_GeographicBoundary
-    ON GeographicBoundary (GeographicType, Number);
+
+EXEC BoroughBoundary_Extraction;
+Go
 
 SELECT *
-FROM GeographicBoundary;
+FROM BoroughBoundary;
+Go
+--- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = City Council Boundary =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
+
+CREATE TABLE CityCouncilBoundary
+(
+
+    District            INT PRIMARY KEY,
+    CouncilGovernerName VARCHAR(255),
+    BoroughID           INT FOREIGN KEY (BoroughID) REFERENCES BoroughBoundary (BoroughValue),
+);
 GO
+
+CREATE OR ALTER PROCEDURE CityCouncilBoundary_Extraction AS
+BEGIN
+    INSERT INTO CityCouncilBoundary (District, CouncilGovernerName, BoroughID)
+    SELECT [DISTRICT], [NAME], bb.BoroughValue
+    FROM [NYC_311_REQUESTS].[dbo].[Council_Members] nyc
+             INNER JOIN BoroughBoundary bb ON nyc.[BOROUGH] = bb.BoroughName
+END
+GO
+
+EXEC CityCouncilBoundary_Extraction;
+
+SELECT *
+FROM CityCouncilBoundary;
+
+--- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = Police Precint Boundary =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
+DROP TABLE PolicePrecinct;
+CREATE TABLE PolicePrecinct
+(
+    PrecinctNumber  INT PRIMARY KEY,
+    PrecinctName    VARCHAR(255),
+    PhoneNumber     VARCHAR(20),
+    PrecinctAddress VARCHAR(255),
+    BoroughID       INT FOREIGN KEY (BoroughID) REFERENCES BoroughBoundary (BoroughValue)
+);
+GO
+
+CREATE OR ALTER PROCEDURE PolicePrecinct_Extraction AS
+BEGIN
+    INSERT INTO PolicePrecinct (PrecinctNumber, PrecinctName, PhoneNumber, PrecinctAddress, BoroughID)
+    SELECT [Precinct_Number]
+         , [Name]
+         , [Phone_number]
+         , [Address]
+         , bb.BoroughValue
+    FROM [NYC_311_REQUESTS].[dbo].[Police_Precint] nyc
+             INNER JOIN BoroughBoundary bb ON nyc.[Borough] = bb.BoroughName
+END
+GO
+
+EXEC PolicePrecinct_Extraction;
+
+SELECT *
+FROM PolicePrecinct;
+
 --- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = Resolution TABLE =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
 
 DROP TABLE Resolution;
@@ -297,6 +317,7 @@ FROM Resolution;
 --- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = Service Request =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ----
 
 DROP TABLE ServiceRequest;
+
 CREATE TABLE ServiceRequest
 (
     UniqueKey             INT PRIMARY KEY IDENTITY,
@@ -304,54 +325,50 @@ CREATE TABLE ServiceRequest
     CreatedDate           DATETIME,
     ClosedDate            DATETIME,
     DueDate               DATETIME,
-    ResolutionID          INT FOREIGN KEY (ResolutionID) REFERENCES Resolution (ID),
-    AgencyID              INT FOREIGN KEY (AgencyID) REFERENCES Agency (ID),
-    LocationID            INT FOREIGN KEY (LocationID) REFERENCES ServiceRequestLocation (ID),
-    CommunityDistrictID   INT FOREIGN KEY REFERENCES GeographicBoundary (ID),
-    BoroughBoundaryID     INT FOREIGN KEY REFERENCES GeographicBoundary (ID),
-    CityCouncilDistrictID INT FOREIGN KEY REFERENCES GeographicBoundary (ID),
-    PolicePrecinctID      INT FOREIGN KEY REFERENCES GeographicBoundary (ID),
+    ResolutionID          INT FOREIGN KEY REFERENCES Resolution (ID),
+    AgencyID              INT FOREIGN KEY REFERENCES Agency (ID),
+    LocationID            INT FOREIGN KEY REFERENCES IncidentLocations (ID),
+    CityID                INT FOREIGN KEY REFERENCES City (ID),
+    CityCouncilDistrictID INT FOREIGN KEY REFERENCES CityCouncilBoundary (District),
+    BoroughBoundaryID     INT FOREIGN KEY REFERENCES BoroughBoundary (BoroughValue),
+    PolicePrecinctID      INT FOREIGN KEY REFERENCES PolicePrecinct (PrecinctNumber),
 );
 GO
 
-CREATE NONCLUSTERED INDEX IDX_ServiceRequest_ServiceKeyID
-    ON ServiceRequest (ServiceKeyID);
-GO
 
 CREATE OR ALTER PROCEDURE ServiceRequests_Extract AS
 BEGIN
-
     SET NOCOUNT ON;
     INSERT INTO ServiceRequest (ServiceKeyID, CreatedDate, ClosedDate, DueDate, ResolutionID, AgencyID, LocationID,
-                                CommunityDistrictID, BoroughBoundaryID, CityCouncilDistrictID, PolicePrecinctID)
+                                BoroughBoundaryID, CityCouncilDistrictID, PolicePrecinctID)
     SELECT r.Unique_Key
          , r.Created_Date
          , r.Closed_Date
          , r.Due_Date
          , rs.ID
-         , a.ID  AS AgencyID
-         , l.ID  AS LocationID
-         , g1.ID AS CommunityDistrictID
-         , g2.ID AS BoroughBoundaryID
-         , g3.ID AS CityCouncilDistrictID
-         , g4.ID AS PolicePrecinctID
+         , a.ID              AS AgencyID
+         , l.ID              AS LocationID
+         , bb.BoroughValue   AS BoroughBoundaryID
+         , cc.District       AS CityCouncilDistrictID
+         , pp.PrecinctNumber AS PolicePrecinctID
     FROM [NYC_311_REQUESTS].[dbo].[311_JAN_2023_TO_MAR_2023] r
              LEFT JOIN Resolution rs
                        ON r.Unique_Key = rs.ServiceKeyID
              LEFT JOIN Agency a
                        ON r.Agency = a.AgencyName
-             LEFT JOIN ServiceRequestLocation l
+             LEFT JOIN IncidentLocations l
                        ON r.Incident_Zip = l.IncidentZip AND r.Incident_Address = l.IncidentAddress
-             LEFT JOIN GeographicBoundary g1
-                       ON r.Community_Districts = g1.Number AND g1.GeographicType = 'Community District'
-             LEFT JOIN GeographicBoundary g2
-                       ON r.Borough_Boundaries = g2.Number AND g2.GeographicType = 'Borough Boundary'
-             LEFT JOIN GeographicBoundary g3
-                       ON r.City_Council_Districts = g3.Number AND g3.GeographicType = 'City Council District'
-             LEFT JOIN GeographicBoundary g4
-                       ON r.Police_Precincts = g4.Number AND g4.GeographicType = 'Police Precinct'
+             LEFT JOIN City
+                       ON City.CityName = r.[City]
+             LEFT JOIN BoroughBoundary bb
+                       ON r.Borough_Boundaries = bb.BoroughValue
+             LEFT JOIN CityCouncilBoundary cc
+                       ON r.City_Council_Districts = cc.District
+             LEFT JOIN PolicePrecinct pp
+                       ON r.Police_Precincts = pp.PrecinctNumber
 END
 GO
+
 EXEC ServiceRequests_Extract;
 GO
 
@@ -359,18 +376,16 @@ SELECT *
 FROM ServiceRequest;
 GO
 --- =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  =  = ServiceRequest_Complaint Junction TABLE =  =  =  =  =  =  =  =  =  =  =  =  =  = ---
-
+DROP TABLE ServiceRequest_Complaint;
+GO
 CREATE TABLE ServiceRequest_Complaint
 (
-    ServiceRequestID INT,
-    ComplaintID      INT,
-    FOREIGN KEY (ServiceRequestID) REFERENCES ServiceRequest (UniqueKey), ̥̥̥̥
-    FOREIGN KEY (ComplaintID) REFERENCES Complaint (ID) ̥̥
+    ServiceRequestID INT FOREIGN KEY REFERENCES ServiceRequest (UniqueKey),
+    ComplaintID      INT FOREIGN KEY REFERENCES Complaint (ID)
 );
 GO
 
-DROP TABLE ServiceRequest_Complaint;
-GO
+
 CREATE OR ALTER PROCEDURE ServiceRequest_Complaint_Insert AS
 BEGIN
 
@@ -385,6 +400,16 @@ BEGIN
                         ON r.Complaint_Type = c.ComplaintType
 END
 GO
+
+CREATE NONCLUSTERED INDEX IDX_ServiceRequest_ServiceKeyID
+    ON ServiceRequest (ServiceKeyID);
+GO
+
+
+CREATE NONCLUSTERED INDEX IDX_Complaint
+    ON Complaint (ComplaintType);
+GO
+
 EXECUTE ServiceRequest_Complaint_Insert;
 GO
 
