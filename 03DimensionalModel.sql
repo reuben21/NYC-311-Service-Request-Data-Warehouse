@@ -6,11 +6,11 @@ GO
 
 -- ================================ DIMESNIONAL MODEL =======================================
 
--- ======= Dimension Date ============
--- DROP TABLE DIMDATE;
+-- ======= DimDate ============
+
 CREATE TABLE DimDate		---SCD TYPE 0
 (
-   DateKey		INT PRIMARY KEY,
+   DateKey		INT NOT NULL,
    aDate		DATE NOT NULL,
    aYear		INT NOT NULL,
    aQuarter		INT NOT NULL,
@@ -19,90 +19,6 @@ CREATE TABLE DimDate		---SCD TYPE 0
    aDayOfWeek   INT NOT NULL,
 );
 GO
-
--- ======= Dimension Time ============
--- DROP TABLE DIMTIME;
-CREATE TABLE DimTime  ---SCD TYPE 0
-(
-   TimeKey     INT PRIMARY KEY,
-   aTime       TIME(0) NOT NULL,
-   anHour      INT NOT NULL,
-   aMinute     INT NOT NULL,
-);
-GO
-
-
--- ======= DimLocation ============
-
-
-CREATE TABLE DimComplaintLocation --- Type SCD 0
-(
-	LocationKey			INT PRIMARY KEY NOT NULL,
-    Zip			        VARCHAR(255)	NULL,
-	LocationAddress		VARCHAR(255)    NULL,
-    CityCouncilDistrict INT				NULL,
-    PolicePrecinct		VARCHAR(255)	NULL,
-    City				VARCHAR(255)	NULL,
-    Borough				VARCHAR(50)	    NULL,
-    LocationType		VARCHAR(255)	NULL
-);
-GO
-
-
--- ======= DimAgency ============
-
-CREATE TABLE DimAgency --- Type SCD 1
-(
-	AgencyKey			INT PRIMARY KEY NOT NULL,
-	AgencyName			VARCHAR(255) NULL,
-	AgencyDescription	VARCHAR(255) NULL,
-    UpdateDate              DATETIME NOT NULL
-);
-GO
-
-CREATE TABLE DimComplaintType --- Type SCD 1
-(
-	ComplaintTypeKey		INT PRIMARY KEY NOT NULL,
-	ComplaintType			VARCHAR(255) NULL,
-	ComplaintDescription	VARCHAR(MAX) NULL,
-    UpdateDate              DATETIME NOT NULL
-);
-GO
-
-CREATE TABLE DimStatus --- Type SCD 2
-(
-	StatusKey							INT PRIMARY KEY NOT NULL,
-    StatusID                            INT NOT NULL,
-	StatusType							VARCHAR(255) NULL,
-    StatusResolutionDescription			VARCHAR(MAX) NULL,
-    StatusDurationDays					INT NULL,
-	StatusStarted						DATETIME NULL,
-    StatusUpdatedDate                   DATETIME NULL,
-    StatusEnded						    DATETIME NULL, ---> StatusResolutionActionUpdatedDate
-);
-GO
-
---Fact Table:
-
-CREATE TABLE FactComplaint 
-(
-    DateKey INT FOREIGN KEY REFERENCES DimDate(DateKey),
-    LocationKey INT FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
-    AgencyKey INT FOREIGN KEY REFERENCES DimAgency(AgencyKey),
-    ComplaintTypeKey INT FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
-    StatusKey INT FOREIGN KEY REFERENCES DimStatus(StatusKey),
-    Total_Complaints INT,
-    Total_Resolved_Complaints INT,
-    Total_Unresolved_Complaints INT,
-    Total_Escalated_Complaints INT,
-    Total_Reassigned_Complaints INT,
-    Avg_Resolution_Time_Hours FLOAT,
-    Escalation_Rate FLOAT,
-    CONSTRAINT PK_FactComplaint PRIMARY KEY (DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
-);
-
-GO
-
 
 ----================ PROCEDURE TO INSERT DATE ==================----
 CREATE OR ALTER PROCEDURE DimDateInsertion
@@ -134,19 +50,31 @@ BEGIN
         DATEPART(WEEKDAY, aDate)
     FROM @DateTable;
 END
+GO
 
-
-EXEC DimDateInsertion '2023-01-01', '2023-04-01';
+EXEC DimDateInsertion '2023-01-01', '2023-03-31';
 GO
 
 SELECT * FROM DimDate order by datekey;
 GO
 
+-- ======= DimTime ============
+
+CREATE TABLE DimTime  ---SCD TYPE 0
+(
+   TimeKey     INT NOT NULL,
+   aTime       TIME(0) NOT NULL,
+   anHour      INT NOT NULL,
+   aMinute     INT NOT NULL,
+);
+GO
+
+
 ----================ PROCEDURE TO INSERT TIME ==================----
 CREATE OR ALTER PROCEDURE PopulateDimTimeForDay
 AS
 BEGIN
-    DECLARE @date DATE = '2023-04-19';
+    DECLARE @date DATE = GETDATE();
     DECLARE @hour INT = 0;
     DECLARE @minute INT = 0;
 
@@ -164,30 +92,97 @@ BEGIN
         SET @minute = 0;
     END
 END
-
+GO
 
 EXEC PopulateDimTimeForDay;
 GO
 
 SELECT * FROM DimTime;
+GO
+-- ======= DimLocation ============
+
+
+CREATE TABLE DimComplaintLocation --- Type SCD 0
+(
+	LocationKey			INT NOT NULL,
+    Zip			        VARCHAR(255)	NULL,
+	LocationAddress		VARCHAR(255)    NULL,
+    CityCouncilDistrict INT				NULL,
+    PolicePrecinct		VARCHAR(255)	NULL,
+    City				VARCHAR(255)	NULL,
+    Borough				VARCHAR(50)	    NULL,
+    LocationType		VARCHAR(255)	NULL
+);
+GO
+
+
+-- ======= DimAgency ============
+
+CREATE TABLE DimAgency --- Type SCD 1
+(
+	AgencyKey			INT NOT NULL,
+	AgencyName			VARCHAR(255) NULL,
+	AgencyDescription	VARCHAR(255) NULL,
+    UpdateDate          DATETIME NOT NULL
+);
+GO
+
+CREATE TABLE DimComplaintType --- Type SCD 1
+(
+	ComplaintTypeKey		INT NOT NULL,
+	ComplaintType			VARCHAR(255) NULL,
+	ComplaintDescription	VARCHAR(MAX) NULL,
+    UpdateDate              DATETIME NOT NULL
+);
+GO
+
+CREATE TABLE DimStatus --- Type SCD 2
+(
+	StatusKey							INT NOT NULL,
+    StatusID                            INT NOT NULL,
+	StatusType							VARCHAR(255) NULL,
+    StatusResolutionDescription			VARCHAR(MAX) NULL,
+    StatusDurationDays					INT NULL,
+	StatusStarted						DATETIME NULL,
+    StatusUpdatedDate                   DATETIME NULL,
+    StatusEnded						    DATETIME NULL, ---> StatusResolutionActionUpdatedDate
+	StartDate							DATE NOT NULL,
+    EndDate								DATE NULL
+);
+GO
+
+--Fact Table:
+
+CREATE TABLE FactComplaint 
+(
+    DateKey			INT NOT NULL FOREIGN KEY REFERENCES DimDate(DateKey),
+	TimeKey			INT NOT NULL FOREIGN KEY REFERENCES DimTime(TimeKey),
+    LocationKey			INT NOT NULL FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
+    AgencyKey			INT NOT NULL FOREIGN KEY REFERENCES DimAgency(AgencyKey),
+    ComplaintTypeKey		INT NOT NULL FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
+    StatusKey			INT NOT NULL FOREIGN KEY REFERENCES DimStatus(StatusKey),
+    Total_Complaints		INT NOT NULL,
+    Total_Resolved_Complaints	INT NOT NULL,
+    Total_Unresolved_Complaints INT NOT NULL,
+    Total_Escalated_Complaints	INT NOT NULL,
+    Total_Reassigned_Complaints INT NOT NULL,
+    Avg_Resolution_Time_Hours	FLOAT NOT NULL,
+    Escalation_Rate		FLOAT NOT NULL,
+);
+CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
+GO
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+--DROP TABLE dbo.factcomplaint
+--DROP TABLE dbo.dimAgency
+--DROP TABLE dbo.dimDate
+--DROP TABLE dbo.DimTime
+--DROP TABLE dbo.dimstatus
+--DROP TABLE dbo.dimlocation
+--DROP TABLE dbo.dimcomplainttype
 
 
 
