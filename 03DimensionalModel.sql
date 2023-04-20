@@ -6,8 +6,8 @@ GO
 
 -- ================================ DIMESNIONAL MODEL =======================================
 
--- ======= DimDate ============
-DROP TABLE DIMDATE;
+-- ======= Dimension Date ============
+-- DROP TABLE DIMDATE;
 CREATE TABLE DimDate		---SCD TYPE 0
 (
    DateKey		INT PRIMARY KEY,
@@ -20,7 +20,8 @@ CREATE TABLE DimDate		---SCD TYPE 0
 );
 GO
 
-DROP TABLE DIMTIME;
+-- ======= Dimension Time ============
+-- DROP TABLE DIMTIME;
 CREATE TABLE DimTime  ---SCD TYPE 0
 (
    TimeKey     INT PRIMARY KEY,
