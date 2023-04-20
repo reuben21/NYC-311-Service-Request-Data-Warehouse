@@ -284,8 +284,31 @@ GO
 
 SELECT * FROM DimComplaintLocation;
 GO
+--============== ETL FOR Dimension Agency ==================
 
 -- ======= DimAgency ============
+
+CREATE TABLE Stage_DimAgency (
+    AgencyID           INT,
+    AgencyName          VARCHAR(255),
+    AgencyDescription   VARCHAR(255),
+    
+);
+GO
+
+CREATE OR ALTER PROCEDURE Extract_Agency AS
+BEGIN
+    -- Load data into Stage_DimAgency
+    INSERT INTO Stage_DimAgency (AgencyID, AgencyName, AgencyDescription)
+    SELECT ID, AgencyName, AgencyDescription FROM [NYC_311].[dbo].Agency;
+
+END;
+
+EXEC Extract_Agency;
+GO
+
+SELECT * FROM Stage_DimAgency;
+
 
 CREATE TABLE DimAgency --- Type SCD 1
 (
@@ -296,6 +319,33 @@ CREATE TABLE DimAgency --- Type SCD 1
 );
 GO
 
+--============================ ETL FOR Dimension Complaint Type ================================
+
+--============== ComplaintLocation STAGE TABLE ==================
+
+DROP TABLE IF EXISTS Stage_DimComplaintType;
+CREATE TABLE Stage_DimComplaintType (
+    ComplaintTypeID        INT,
+    ComplaintType           VARCHAR(255),
+    ComplaintDescription    VARCHAR(MAX)
+);
+GO
+
+CREATE OR ALTER PROCEDURE Extract_DimComplaintType AS
+BEGIN
+      -- Load data into Stage_DimComplaintType
+    INSERT INTO Stage_DimComplaintType (  ComplaintTypeID,   ComplaintType, ComplaintDescription)
+    SELECT ID, ComplaintType, ComplaintDescriptor FROM [NYC_311].[dbo].Complaint;
+
+END;
+
+EXEC Extract_DimComplaintType;
+GO
+
+SELECT * FROM Stage_DimComplaintType;
+ 
+--============== ComplaintLocation DIMENSION TABLE =============
+
 CREATE TABLE DimComplaintType --- Type SCD 1
 (
 	ComplaintTypeKey		INT NOT NULL,
@@ -305,6 +355,48 @@ CREATE TABLE DimComplaintType --- Type SCD 1
 );
 GO
 
+--============================ ETL FOR Dimension Status Type ================================
+
+--============== STATUS STAGE TABLE ==================
+
+
+CREATE TABLE Stage_Status--- Type SCD 2
+(
+    StatusID                            INT NOT NULL,
+	StatusType							VARCHAR(255) NULL,
+    StatusResolutionDescription			VARCHAR(MAX) NULL,
+    StatusDurationDays					INT NULL,
+	StatusStarted						DATETIME NULL, ---> Created Date from Service Request
+    StatusUpdatedDate                   DATETIME NULL,  ---> StatusResolutionActionUpdatedDate
+    StatusEnded						    DATETIME NULL, --> End Date from Service Request
+);
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[Extract_Status]
+AS
+BEGIN
+    INSERT INTO Stage_Status (StatusID, StatusType, StatusResolutionDescription,
+     StatusDurationDays, StatusStarted, StatusUpdatedDate, StatusEnded)
+    SELECT 
+        s.ServiceKeyID,
+        r.ResolutionStatus,
+        r.ResolutionDescription,
+        DATEDIFF(DAY, s.CreatedDate, COALESCE(s.ClosedDate, GETDATE())) AS StatusDurationDays,
+        s.CreatedDate,
+        r.ResolutionActionUpdatedDate AS StatusUpdatedDate,
+        s.ClosedDate
+    FROM [NYC_311].[dbo].ServiceRequest s
+    LEFT JOIN [NYC_311].[dbo].Resolution r ON s.ResolutionID = r.ID;
+END
+
+--  CASE 
+--             WHEN s.ClosedDate IS NULL THEN r.ResolutionActionUpdatedDate 
+--             ELSE NULL 
+--         END AS StatusUpdatedDate,
+
+EXEC Extract_Status;
+
 CREATE TABLE DimStatus --- Type SCD 2
 (
 	StatusKey							INT NOT NULL,
@@ -312,15 +404,15 @@ CREATE TABLE DimStatus --- Type SCD 2
 	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
     StatusDurationDays					INT NULL,
-	StatusStarted						DATETIME NULL,
-    StatusUpdatedDate                   DATETIME NULL,
-    StatusEnded						    DATETIME NULL, ---> StatusResolutionActionUpdatedDate
+	StatusStarted						DATETIME NULL, ---> Created Date from Service Request
+    StatusUpdatedDate                   DATETIME NULL,  ---> StatusResolutionActionUpdatedDate
+    StatusEnded						    DATETIME NULL, --> End Date from Service Request
 	StartDate							DATE NOT NULL,
     EndDate								DATE NULL
 );
 GO
 
---Fact Table:
+--Fact Table:A
 
 CREATE TABLE FactComplaint 
 (
