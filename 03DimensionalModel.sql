@@ -100,6 +100,91 @@ GO
 SELECT * FROM DimTime;
 GO
 -- ======= DimLocation ============
+DROP TABLE Stage_ComplaintLocation;
+CREATE TABLE Stage_ComplaintLocation --- Type SCD 0
+(
+    Zip			        VARCHAR(255)	NULL,
+	LocationAddress		VARCHAR(255)    NULL,
+    CityCouncilDistrict INT				NULL,
+    PolicePrecinct		VARCHAR(255)	NULL,
+    City				VARCHAR(255)	NULL,
+    Borough				VARCHAR(50)	    NULL,
+    LocationType		VARCHAR(255)	NULL
+);
+GO
+
+CREATE OR ALTER PROCEDURE Extract_ComplaintLocation
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    INSERT INTO Stage_ComplaintLocation (Zip, LocationAddress, CityCouncilDistrict, PolicePrecinct, City, Borough, LocationType)
+    SELECT DISTINCT
+        IL.IncidentZip,
+        IL.IncidentAddress,
+        CC.BoroughID,
+        PP.PrecinctName,
+        C.CityName,
+        BB.BoroughName,
+        IL.AddressType
+    FROM [NYC_311].[dbo].ServiceRequest SR
+    JOIN [NYC_311].[dbo].IncidentLocations IL ON SR.LocationID = IL.ID
+    LEFT JOIN [NYC_311].[dbo].City C ON SR.CityID = C.ID
+    LEFT JOIN [NYC_311].[dbo].CityCouncilBoundary CC ON SR.CityCouncilDistrictID = CC.District
+    LEFT JOIN [NYC_311].[dbo].BoroughBoundary BB ON SR.BoroughBoundaryID = BB.BoroughValue
+    LEFT JOIN [NYC_311].[dbo].PolicePrecinct PP ON SR.PolicePrecinctID = PP.PrecinctNumber;
+END;
+
+exec Extract_ComplaintLocation;
+
+SELECT * FROM Stage_ComplaintLocation
+
+---============PRELOAD COMPLAINT LOCATION =====================---
+CREATE TABLE Preload_ComplaintLocation
+(
+    LocationKey         INT,
+    Zip                 VARCHAR(255)    NULL,
+    LocationAddress     VARCHAR(255)    NULL,
+    CityCouncilDistrict INT             NULL,
+    PolicePrecinct      VARCHAR(255)    NULL,
+    City                VARCHAR(255)    NULL,
+    Borough             VARCHAR(50)     NULL,
+    LocationType        VARCHAR(255)    NULL
+);
+GO
+
+CREATE PROCEDURE Transform_ComplaintLocation
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Insert new records
+    INSERT INTO Preload_ComplaintLocation (LocationKey, Zip, LocationAddress, CityCouncilDistrict, PolicePrecinct, City, Borough, LocationType)
+    SELECT 0, Zip, LocationAddress, CityCouncilDistrict, PolicePrecinct, City, Borough, LocationType
+    FROM Stage_ComplaintLocation;
+
+    -- Update existing records (if any)
+    UPDATE DimComplaintLocation
+    SET Zip = Stage.Zip,
+        LocationAddress = Stage.LocationAddress,
+        CityCouncilDistrict = Stage.CityCouncilDistrict,
+        PolicePrecinct = Stage.PolicePrecinct,
+        City = Stage.City,
+        Borough = Stage.Borough,
+        LocationType = Stage.LocationType
+    FROM DimComplaintLocation D
+    JOIN Stage_ComplaintLocation S ON D.LocationKey = 0 AND S.Zip = D.Zip AND S.LocationAddress = D.LocationAddress;
+
+    -- Insert new records (excluding duplicates)
+    INSERT INTO DimComplaintLocation (Zip, LocationAddress, CityCouncilDistrict, PolicePrecinct, City, Borough, LocationType)
+    SELECT Zip, LocationAddress, CityCouncilDistrict, PolicePrecinct, City, Borough, LocationType
+    FROM Stage_ComplaintLocation S
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM DimComplaintLocation D
+        WHERE D.Zip = S.Zip AND D.LocationAddress = S.LocationAddress
+    );
+END;
 
 
 CREATE TABLE DimComplaintLocation --- Type SCD 0
