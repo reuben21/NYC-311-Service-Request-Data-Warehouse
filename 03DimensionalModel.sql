@@ -20,6 +20,7 @@ CREATE TABLE DimDate		---SCD TYPE 0
 );
 GO
 
+DROP TABLE DIMTIME;
 CREATE TABLE DimTime 
 (
    TimeKey     INT PRIMARY KEY,
@@ -53,7 +54,8 @@ CREATE TABLE DimAgency
 (
 	AgencyKey			INT PRIMARY KEY NOT NULL,
 	AgencyName			VARCHAR(255) NULL,
-	AgencyDescription	VARCHAR(255) NULL
+	AgencyDescription	VARCHAR(255) NULL,
+    UpdateDate              DATETIME NOT NULL
 );
 GO
 
@@ -61,7 +63,8 @@ CREATE TABLE DimComplaintType
 (
 	ComplaintTypeKey		INT PRIMARY KEY NOT NULL,
 	ComplaintType			VARCHAR(255) NULL,
-	ComplaintDescription	VARCHAR(MAX) NULL
+	ComplaintDescription	VARCHAR(MAX) NULL,
+    UpdateDate              DATETIME NOT NULL
 );
 GO
 
@@ -71,9 +74,10 @@ CREATE TABLE DimStatus
     StatusID                            INT NOT NULL,
 	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
+    StatusDurationDays					INT NULL,
 	StatusStartDate						DATETIME NULL,
     StatusEndDate						DATETIME NULL, ---> StatusResolutionActionUpdatedDate
-    StatusDurationDays					INT NULL
+    
 );
 GO
 
@@ -139,27 +143,25 @@ GO
 CREATE OR ALTER PROCEDURE PopulateDimTimeForDay
 AS
 BEGIN
-    DECLARE @startTime TIME(0) = '00:00';
-    DECLARE @endTime TIME(0) = '23:59';
-    DECLARE @increment INT = 1;
-    DECLARE @timeDim TABLE (TimeKey INT PRIMARY KEY, aTime TIME(0), anHour INT, aMinute INT, aSecond INT);
+    DECLARE @date DATE = '2023-04-19';
+    DECLARE @hour INT = 0;
+    DECLARE @minute INT = 0;
 
-    WHILE @startTime <= @endTime
+    WHILE @hour < 24
     BEGIN
-        INSERT INTO @timeDim (TimeKey, aTime, anHour, aMinute, aSecond)
-        VALUES (CONVERT(INT,REPLACE(CONVERT(VARCHAR(8), @startTime, 108), ':', '')),
-                @startTime,
-                DATEPART(HOUR, @startTime),
-                DATEPART(MINUTE, @startTime),
-                DATEPART(SECOND, @startTime));
-
-        SET @startTime = DATEADD(SECOND, @increment, @startTime);
+        WHILE @minute < 60
+        BEGIN
+            INSERT INTO DimTime (TimeKey, aTime, anHour, aMinute)
+            VALUES ((@hour * 60) + @minute, 
+                    CAST(CAST(@date AS VARCHAR(10)) + ' ' + CAST(@hour AS VARCHAR(2)) + ':' + CAST(@minute AS VARCHAR(2)) AS DATETIME),
+                    @hour, @minute);
+            SET @minute = @minute + 1;
+        END
+        SET @hour = @hour + 1;
+        SET @minute = 0;
     END
-
-    INSERT INTO DimTime (TimeKey, aTime, anHour, aMinute, aSecond)
-    SELECT TimeKey, aTime, anHour, aMinute, aSecond FROM @timeDim;
 END
-GO
+
 
 EXEC PopulateDimTimeForDay;
 GO
