@@ -1,0 +1,66 @@
+DROP TABLE IF EXISTS DimComplaintType
+GO
+CREATE TABLE DimComplaintType --- Type SCD 1
+(
+	ComplaintTypeKey		INT IDENTITY PRIMARY KEY,
+	ComplaintTypeID			INT NOT NULL,
+	ComplaintType			VARCHAR(255) NULL,
+	ComplaintDescription	VARCHAR(500) NULL,
+    UpdateDate              DATETIME NOT NULL
+);
+GO
+
+DROP TABLE IF EXISTS DimComplaintType_Stage;
+GO
+CREATE TABLE DimComplaintType_Stage 
+(
+    ComplaintTypeID         INT,
+    ComplaintType           VARCHAR(255),
+    ComplaintDescription    VARCHAR(500),
+	UpdateDate              DATETIME
+);
+GO
+
+CREATE OR ALTER PROCEDURE Extract_DimComplaintType AS
+BEGIN
+	SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    DECLARE @RowCt INT = 0;
+
+	BEGIN TRANSACTION;
+
+    -- Load data into Stage_DimComplaintType
+    INSERT INTO DimComplaintType_Stage (ComplaintTypeID, ComplaintType, ComplaintDescription, UpdateDate)
+    SELECT DISTINCT ID, ComplaintType, ComplaintDescriptor, GETDATE() FROM [NYC_311].[dbo].Complaint;
+	SET @RowCt += @@ROWCOUNT;
+
+    IF @RowCt = 0
+        BEGIN
+            THROW 50001, 'No records found. Check with source system.', 1;
+        END
+    COMMIT TRANSACTION;
+END
+GO
+
+EXEC Extract_DimComplaintType;
+GO
+
+SELECT * FROM DimComplaintType_Stage;
+--DELETE FROM DimComplaintType_Stage; 
+
+--1. INITIAL LOAD
+SELECT * FROM DimComplaintType_Stage
+SELECT * FROM DimComplaintType
+
+
+--new insertion in the staging table
+INSERT INTO DimComplaintType_Stage (ComplaintTypeID, ComplaintType, ComplaintDescription, UpdateDate)
+VALUES (964,'complainttype','ComplaintDescription',GETDATE())
+SELECT * from DimComplaintType_Stage
+SELECT * FROM DimComplaintType
+
+
+-- Updating existing Records
+UPDATE DimComplaintType_Stage SET ComplaintDescription='Complaint Description is not enough' WHERE ComplaintTypeID=964
+SELECT * from DimComplaintType_Stage
+SELECT * from DimComplaintType
