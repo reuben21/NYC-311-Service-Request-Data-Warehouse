@@ -21,7 +21,7 @@ CREATE TABLE DimDate		---SCD TYPE 0
 GO
 
 DROP TABLE DIMTIME;
-CREATE TABLE DimTime 
+CREATE TABLE DimTime  ---SCD TYPE 0
 (
    TimeKey     INT PRIMARY KEY,
    aTime       TIME(0) NOT NULL,
@@ -34,11 +34,11 @@ GO
 -- ======= DimLocation ============
 
 
-CREATE TABLE DimLocation 
+CREATE TABLE DimComplaintLocation --- Type SCD 0
 (
 	LocationKey			INT PRIMARY KEY NOT NULL,
-    IncidentZip			VARCHAR(255)	NULL,
-	IncidentAddress		VARCHAR(255)    NULL,
+    Zip			        VARCHAR(255)	NULL,
+	LocationAddress		VARCHAR(255)    NULL,
     CityCouncilDistrict INT				NULL,
     PolicePrecinct		VARCHAR(255)	NULL,
     City				VARCHAR(255)	NULL,
@@ -50,7 +50,7 @@ GO
 
 -- ======= DimAgency ============
 
-CREATE TABLE DimAgency 
+CREATE TABLE DimAgency --- Type SCD 1
 (
 	AgencyKey			INT PRIMARY KEY NOT NULL,
 	AgencyName			VARCHAR(255) NULL,
@@ -59,7 +59,7 @@ CREATE TABLE DimAgency
 );
 GO
 
-CREATE TABLE DimComplaintType 
+CREATE TABLE DimComplaintType --- Type SCD 1
 (
 	ComplaintTypeKey		INT PRIMARY KEY NOT NULL,
 	ComplaintType			VARCHAR(255) NULL,
@@ -68,16 +68,16 @@ CREATE TABLE DimComplaintType
 );
 GO
 
-CREATE TABLE DimStatus 
+CREATE TABLE DimStatus --- Type SCD 2
 (
 	StatusKey							INT PRIMARY KEY NOT NULL,
     StatusID                            INT NOT NULL,
 	StatusType							VARCHAR(255) NULL,
     StatusResolutionDescription			VARCHAR(MAX) NULL,
     StatusDurationDays					INT NULL,
-	StatusStartDate						DATETIME NULL,
-    StatusEndDate						DATETIME NULL, ---> StatusResolutionActionUpdatedDate
-    
+	StatusStarted						DATETIME NULL,
+    StatusUpdatedDate                   DATETIME NULL,
+    StatusEnded						    DATETIME NULL, ---> StatusResolutionActionUpdatedDate
 );
 GO
 
@@ -86,7 +86,7 @@ GO
 CREATE TABLE FactComplaint 
 (
     DateKey INT FOREIGN KEY REFERENCES DimDate(DateKey),
-    LocationKey INT FOREIGN KEY REFERENCES DimLocation(LocationKey),
+    LocationKey INT FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
     AgencyKey INT FOREIGN KEY REFERENCES DimAgency(AgencyKey),
     ComplaintTypeKey INT FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
     StatusKey INT FOREIGN KEY REFERENCES DimStatus(StatusKey),
@@ -101,7 +101,9 @@ CREATE TABLE FactComplaint
 );
 
 GO
------================= ETL ======================-----
+
+
+----================ PROCEDURE TO INSERT DATE ==================----
 CREATE OR ALTER PROCEDURE DimDateInsertion
     @StartDate DATE,
     @EndDate DATE
