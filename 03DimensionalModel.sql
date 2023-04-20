@@ -359,7 +359,6 @@ GO
 
 --============== STATUS STAGE TABLE ==================
 
-
 CREATE TABLE Stage_Status--- Type SCD 2
 (
     StatusID                            INT NOT NULL,
@@ -378,7 +377,7 @@ AS
 BEGIN
     INSERT INTO Stage_Status (StatusID, StatusType, StatusResolutionDescription,
      StatusDurationDays, StatusStarted, StatusUpdatedDate, StatusEnded)
-    SELECT 
+    SELECT TOP(20000)
         s.ServiceKeyID,
         r.ResolutionStatus,
         r.ResolutionDescription,
@@ -387,7 +386,7 @@ BEGIN
         r.ResolutionActionUpdatedDate AS StatusUpdatedDate,
         s.ClosedDate
     FROM [NYC_311].[dbo].ServiceRequest s
-    LEFT JOIN [NYC_311].[dbo].Resolution r ON s.ResolutionID = r.ID;
+    INNER JOIN [NYC_311].[dbo].Resolution r ON s.ResolutionID = r.ID;
 END
 
 --  CASE 
@@ -396,6 +395,11 @@ END
 --         END AS StatusUpdatedDate,
 
 EXEC Extract_Status;
+
+SELECT * FROM Stage_Status;
+
+--============== STATUS DIMENSION TABLE ==================
+
 
 CREATE TABLE DimStatus --- Type SCD 2
 (
