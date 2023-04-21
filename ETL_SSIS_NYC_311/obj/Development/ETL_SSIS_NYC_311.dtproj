@@ -26,7 +26,7 @@
           <SSIS:Property SSIS:Name="CreatorComputerName">REUBEN</SSIS:Property>
           <SSIS:Property SSIS:Name="Description">
           </SSIS:Property>
-          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA0yONO3d5bUyNr6egjFT4rQAAAAACAAAAAAAQZgAAAAEAACAAAACfpGmTF/4DAs967ZXaQw9wuhWoifMY2F10wGpc8g6ICQAAAAAOgAAAAAIAACAAAABVA7IxfmRQ9gJNCZWw+NWbvYQpXnyGU344ASV5BHDi8JAAAAC3u/dPFk8WWfZKcGUKJoOT2FbngxQBDq9UeESVgBSnQqEMad4LafMOtXnpGxqGJKC3UWfuQG5sm6zxSKexnUQHgUbikNqQS3cq2acHIAKFw9kQB/NVRKzWtdIAvRlYqcT5xm8qpFp6Efkn3qL52o4xyVVRc5abPhUvKUu8wazB0m2h+eGFobw8g56i9osQYpxAAAAAQuz7PHoDfn5yoRQPmO6HLY8HuFPKe10jwJAOhrAYdVRSQ2Ju8Uub3gLemmsMndFkdcXjtU28iFRIYcAJQuu/cQ==</SSIS:Property>
+          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA0yONO3d5bUyNr6egjFT4rQAAAAACAAAAAAAQZgAAAAEAACAAAACr0zlBiDPrSahZ6B2EZlnFYlTiIofp76KqWQdAoiaWewAAAAAOgAAAAAIAACAAAAD8aVGr8f8oeVh8JCI/tdyusHMLolrLgyjJxmYQ/gH7RJAAAADXevaFl3PZykmJ2B50eJ6ekzW/yz7L5wImM45wSE7YuPH9zgxskJ0O4nGP39A5zEsnALENM7s9grLjSCK/blRxsqoVccnEEtVKfW+hIeK8wMF7EqN//mfXk/8rFE2oK2dpC4U/2U6Uj8+fyvQTDxLIKC2iBs7T5772XTpxIs/w8T2og98WNAcsOF2IZw/GcfRAAAAAPnnrZ7Jqsr8K4Q7t4PCC7Cf8Yc/o17OL+AIQIy7ZsHuFvWrkhIiHBwRMk6VMdmVCEj19iIaFUJxI8E8+XDiTUA==</SSIS:Property>
           <SSIS:Property SSIS:Name="FormatVersion">1</SSIS:Property>
         </SSIS:Properties>
         <SSIS:Packages>
@@ -56,21 +56,21 @@
             </SSIS:PackageMetaData>
             <SSIS:PackageMetaData SSIS:Name="ETL_Using_SSIS.dtsx">
               <SSIS:Properties>
-                <SSIS:Property SSIS:Name="ID">{782AA3B9-B03E-4A24-A88C-318B4EE7A1C7}</SSIS:Property>
+                <SSIS:Property SSIS:Name="ID">{DF621DE9-03D1-404E-8B16-20FA1DB5B82D}</SSIS:Property>
                 <SSIS:Property SSIS:Name="Name">ETL_Using_SSIS</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMajor">1</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionBuild">8</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionBuild">18</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionGUID">{24308BB9-BC8A-45B3-8C5A-4102A4320023}</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{B232BED3-FEAF-49B5-A190-63827E143281}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>
                 <SSIS:Property SSIS:Name="ProtectionLevel">1</SSIS:Property>
               </SSIS:Properties>
               <SSIS:Parameters>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ConnectByProxy">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ConnectByProxy">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -85,7 +85,7 @@
                     <SSIS:Property SSIS:Name="DataType">3</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ConnectionString">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ConnectionString">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -96,11 +96,11 @@
                     <SSIS:Property SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Required">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Sensitive">0</SSIS:Property>
-                    <SSIS:Property SSIS:Name="Value">Data Source=.\REUBEN;Initial Catalog=NYC_311_REQUESTS_DM;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;Application Name=SSIS-Package-{BEA2615F-1D21-41CC-BB9D-8ECA89C72317}.\ECE9017.NYC_311_REQUESTS_DM;</SSIS:Property>
+                    <SSIS:Property SSIS:Name="Value">Data Source=.\REUBEN;Initial Catalog=NYC_311_REQUESTS_DM;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;Application Name=SSIS-Package-{DEA9318D-74ED-4F99-9D60-B43E406D9765}.\ECE9017.NYC_311_REQUESTS_DM;</SSIS:Property>
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ConnectRetryCount">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ConnectRetryCount">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -115,7 +115,7 @@
                     <SSIS:Property SSIS:Name="DataType">9</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ConnectRetryInterval">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ConnectRetryInterval">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -130,7 +130,7 @@
                     <SSIS:Property SSIS:Name="DataType">9</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ConnectUsingManagedIdentity">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ConnectUsingManagedIdentity">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -145,7 +145,7 @@
                     <SSIS:Property SSIS:Name="DataType">3</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.InitialCatalog">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.InitialCatalog">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -160,7 +160,7 @@
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.Password">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.Password">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -174,7 +174,7 @@
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.RetainSameConnection">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.RetainSameConnection">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -189,7 +189,7 @@
                     <SSIS:Property SSIS:Name="DataType">3</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.ServerName">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.ServerName">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>
@@ -204,7 +204,7 @@
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
-                <SSIS:Parameter SSIS:Name="CM.OLEDB_Agency.UserName">
+                <SSIS:Parameter SSIS:Name="CM.OLEDB_Connection.UserName">
                   <SSIS:Properties>
                     <SSIS:Property SSIS:Name="ID">
                     </SSIS:Property>

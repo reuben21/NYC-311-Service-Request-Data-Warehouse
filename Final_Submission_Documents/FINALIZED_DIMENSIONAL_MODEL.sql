@@ -112,12 +112,12 @@ BEGIN
         SET @hour = @hour + 1;
         SET @minute = 0;
     END
-	SET @RowCt += @@ROWCOUNT;
+	-- SET @RowCt += @@ROWCOUNT;
 
-    IF @RowCt = 0
-        BEGIN
-            THROW 50001, 'No records found. Check with source system.', 1;
-        END
+    -- IF @RowCt = 0
+    --     BEGIN
+    --         THROW 50001, 'No records found. Check with source system.', 1;
+    --     END
     COMMIT TRANSACTION;
 END
 GO
@@ -204,7 +204,7 @@ GO
 
 CREATE TABLE Preload_ComplaintLocation
 (
-    LocationKey         INT NOT NULL,
+    LocationKey         INT PRIMARY KEY,
     Zip                 VARCHAR(255)    NULL,
     LocationAddress     VARCHAR(255)    NULL,
     CityCouncilDistrict INT             NULL,
@@ -221,7 +221,7 @@ GO
 
 
 --======= TRANSFORM STORED PROCEDURE =============
-CREATE PROCEDURE Transform_ComplaintLocation
+CREATE OR ALTER PROCEDURE Transform_ComplaintLocation
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -245,7 +245,7 @@ BEGIN
             THROW 50001, 'No records found. Check with source system.', 1;
         END
     COMMIT TRANSACTION;
-END;
+END
 GO
 
 EXEC Transform_ComplaintLocation;
@@ -256,7 +256,7 @@ GO
 
 ---===================== LOAD DIMENSION COMPLAINT LOCATION =====================---
 
-CREATE PROCEDURE Load_ComplaintLocation
+CREATE OR ALTER PROCEDURE Load_ComplaintLocation
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -341,6 +341,7 @@ GO
 EXEC Extract_Agency;
 GO
 SELECT * FROM Agency_Stage
+GO
 
 --================= SSIS TESTING ============================================
 ----1. INITIAL LOAD
@@ -452,7 +453,7 @@ CREATE TABLE DimStatus --- Type SCD 2
     StatusUpdatedDate                   DATETIME NULL,
     StatusEnded						    DATETIME NULL, ---> StatusResolutionActionUpdatedDate
 	StartDate							DATE NOT NULL,
-    EndDate								DATE NULL
+    EndDate								DATE NULL
 );
 GO
 
@@ -482,7 +483,7 @@ BEGIN
     
 	INSERT INTO Status_Stage (StatusID, StatusType, StatusResolutionDescription,
     StatusDurationDays, StatusStarted, StatusUpdatedDate, StatusEnded)
-    SELECT DISTINCT TOP(10000)
+    SELECT DISTINCT TOP(100000)
         s.ServiceKeyID,
         r.ResolutionStatus,
         r.ResolutionDescription,
@@ -535,7 +536,50 @@ GO
 --Fact Table:
 
 -- ======= FactComplaint ============
+DROP TABLE IF EXISTS Stage_Complaint
+GO
+CREATE TABLE
+    Stage_Complaint (
+        ServiceRequestID INT,
+        StatusStarted DATETIME,
+        LocationZip VARCHAR(255),
+        LocationAddress VARCHAR(255),
+        AgencyID INT,
+        ComplaintTypeID INT,
+        StatusID INT
+    );
 
+GO
+
+CREATE OR ALTER PROCEDURE Extract_Complaint
+AS
+BEGIN
+    INSERT INTO Stage_Complaint (ServiceRequestID, StatusStarted,
+     LocationZip, LocationAddress, AgencyID, ComplaintTypeID,StatusID)
+    SELECT TOP(100000)
+        sr.ServiceKeyID,
+        sr.CreatedDate,
+        il.IncidentZip,
+        il.IncidentAddress,
+        sr.AgencyID,
+        sr_c.ComplaintID,
+        sr.ResolutionID
+    FROM
+        [NYC_311].[dbo].ServiceRequest sr
+        JOIN [NYC_311].[dbo].IncidentLocations il ON sr.LocationID = il.ID
+        JOIN [NYC_311].[dbo].ServiceRequest_Complaint sr_c ON sr.UniqueKey = sr_c.ServiceRequestID
+        JOIN [NYC_311].[dbo].Complaint c ON sr_c.ComplaintID = c.ID
+        JOIN [NYC_311].[dbo].Resolution r ON sr.ResolutionID = r.ID;
+END
+GO
+
+EXEC Extract_Complaint;
+
+SELECT * FROM Stage_Complaint;
+GO
+
+DROP TABLE IF EXISTS FactComplaint
+GO
 CREATE TABLE FactComplaint 
 (
     DateKey						INT NOT NULL FOREIGN KEY REFERENCES DimDate(DateKey),
@@ -547,14 +591,77 @@ CREATE TABLE FactComplaint
     Total_Complaints			INT NOT NULL,
     Total_Resolved_Complaints	INT	NOT NULL,
     Total_Unresolved_Complaints INT	NOT NULL,
-    Total_Escalated_Complaints	INT	NOT NULL,
-    Total_Reassigned_Complaints INT	NOT NULL,
-    Avg_Resolution_Time_Hours	FLOAT NOT NULL,
-    Escalation_Rate				FLOAT NOT NULL,
+    Avg_Resolution_Time_Hours	FLOAT NOT NULL
 );
-CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 GO
 
+CREATE OR ALTER PROCEDURE Preload_Complaint 
+AS 
+BEGIN
+-- Insert data from Stage_Complaint into Preload_Complaint
+INSERT INTO
+    FactComplaint (
+        DateKey,
+        TimeKey,
+        LocationKey,
+        AgencyKey,
+        ComplaintTypeKey,
+        StatusKey,
+        Total_Complaints,
+        Total_Resolved_Complaints,
+        Total_Unresolved_Complaints,
+        Avg_Resolution_Time_Hours
+    )
+SELECT 
+    d.DateKey,
+    t.TimeKey,
+    l.LocationKey,
+    a.AgencyKey,
+    ct.ComplaintTypeKey,
+    s.StatusKey,
+    COUNT(*) AS Total_Complaints,
+    SUM(
+        CASE
+            WHEN s.StatusType = 'Closed' THEN 1
+            ELSE 0
+        END
+    ) AS Total_Resolved_Complaints,
+    SUM(
+        CASE
+            WHEN s.StatusType != 'Closed' THEN 1
+            ELSE 0
+        END
+    ) AS Total_Unresolved_Complaints,
+    AVG(DATEDIFF (HOUR, s.StatusStarted, s.StatusEnded)) AS Avg_Resolution_Time_Hours
+FROM
+    Stage_Complaint sc
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimDate d ON CONVERT(DATE, sc.StatusStarted) = d.aDate
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimTime t ON CONVERT(TIME, sc.StatusStarted) = t.aTime
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintLocation l ON sc.LocationZip = l.Zip
+    AND sc.LocationAddress = l.LocationAddress
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimAgency a ON sc.AgencyID = a.AgencyID
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintType ct ON sc.ComplaintTypeID = ct.ComplaintTypeID
+    JOIN [NYC_311_REQUESTS_DM].[dbo].DimStatus s ON sc.ServiceRequestID = s.StatusID
+WHERE 
+    sc.ServiceRequestID = s.StatusID
+GROUP BY
+    d.DateKey,
+    t.TimeKey,
+    l.LocationKey,
+    a.AgencyKey,
+    ct.ComplaintTypeKey,
+    s.StatusKey
+    
+
+END 
+GO
+
+EXEC Preload_Complaint;
+
+SELECT * FROM FactComplaint;
+
+CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
+GO
 
 
 -- HOW TO GET THE Total_Complaints PER ROW:

@@ -125,21 +125,7 @@ GO
 
 SELECT * FROM DimTime;
 GO
--- ======= DimLocation ============
 
-
-CREATE TABLE DimComplaintLocation --- Type SCD 0
-(
-	LocationKey			INT NOT NULL,
-    Zip			        VARCHAR(255)	NULL,
-	LocationAddress		VARCHAR(255)    NULL,
-    CityCouncilDistrict INT				NULL,
-    PolicePrecinct		VARCHAR(255)	NULL,
-    City				VARCHAR(255)	NULL,
-    Borough				VARCHAR(50)	    NULL,
-    LocationType		VARCHAR(255)	NULL
-);
-GO
 
 --============== ETL FOR DimComplaintLocation ==================
 
@@ -253,6 +239,23 @@ SELECT * FROM Preload_ComplaintLocation;
 GO
 
 ---===================== LOAD DIMENSION COMPLAINT LOCATION =====================---
+-- ======= DimLocation ============
+
+
+CREATE TABLE DimComplaintLocation --- Type SCD 0
+(
+	LocationKey			INT NOT NULL,
+    Zip			        VARCHAR(255)	NULL,
+	LocationAddress		VARCHAR(255)    NULL,
+    CityCouncilDistrict INT				NULL,
+    PolicePrecinct		VARCHAR(255)	NULL,
+    City				VARCHAR(255)	NULL,
+    Borough				VARCHAR(50)	    NULL,
+    LocationType		VARCHAR(255)	NULL
+);
+GO
+
+-- ======= Load Procedure For Dim Complaint Location ============
 
 CREATE PROCEDURE Load_ComplaintLocation
 AS
@@ -418,22 +421,29 @@ GO
 
 --Fact Table:A
 
-CREATE TABLE FactComplaint 
-(
-    DateKey						INT NOT NULL FOREIGN KEY REFERENCES DimDate(DateKey),
-	TimeKey						INT NOT NULL FOREIGN KEY REFERENCES DimTime(TimeKey),
-    LocationKey					INT NOT NULL FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
-    AgencyKey					INT NOT NULL FOREIGN KEY REFERENCES DimAgency(AgencyKey),
-    ComplaintTypeKey			INT NOT NULL FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
-    StatusKey					INT NOT NULL FOREIGN KEY REFERENCES DimStatus(StatusKey),
-    Total_Complaints			INT NOT NULL,
-    Total_Resolved_Complaints	INT	NOT NULL,
-    Total_Unresolved_Complaints INT	NOT NULL,
-    Total_Escalated_Complaints	INT	NOT NULL,
-    Total_Reassigned_Complaints INT	NOT NULL,
-    Avg_Resolution_Time_Hours	FLOAT NOT NULL,
-    Escalation_Rate				FLOAT NOT NULL,
-);
+CREATE TABLE
+    FactComplaint (
+        DateKey INT NOT NULL,
+        TimeKey INT NOT NULL,
+        LocationKey INT NOT NULL,
+        AgencyKey INT NOT NULL FOREIGN KEY REFERENCES DimAgency (AgencyKey),
+        ComplaintTypeKey INT NOT NULL FOREIGN KEY REFERENCES DimComplaintType (ComplaintTypeKey),
+        StatusKey INT NOT NULL FOREIGN KEY REFERENCES DimStatus (StatusKey),
+        Total_Complaints INT NOT NULL,
+        Total_Resolved_Complaints INT NOT NULL,
+        Total_Unresolved_Complaints INT NOT NULL,
+        Total_Escalated_Complaints INT NOT NULL,
+        Total_Reassigned_Complaints INT NOT NULL,
+        Avg_Resolution_Time_Hours FLOAT NOT NULL,
+        Escalation_Rate FLOAT NOT NULL,
+        CONSTRAINT FK_FactComplaint_DateKey FOREIGN KEY (DateKey) REFERENCES dbo.DimDate (DateKey),
+        CONSTRAINT FK_FactComplaint_TimeKey FOREIGN KEY (TimeKey) REFERENCES dbo.DimTime (TimeKey),
+        CONSTRAINT FK_FactComplaint_LocationKey FOREIGN KEY (LocationKey) REFERENCES dbo.DimComplaintLocation (LocationKey),
+        CONSTRAINT FK_FactComplaint_AgencyKey FOREIGN KEY (AgencyKey) REFERENCES dbo.DimAgency (AgencyKey),
+        CONSTRAINT FK_FactComplaint_ComplaintTypeKey FOREIGN KEY (ComplaintTypeKey) REFERENCES dbo.DimAgency (ComplaintTypeKey),
+        CONSTRAINT FK_FactComplaint_StatusKey FOREIGN KEY (StatusKey) REFERENCES dbo.DimAgency (StatusKey)
+    );
+    
 CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 GO
 
