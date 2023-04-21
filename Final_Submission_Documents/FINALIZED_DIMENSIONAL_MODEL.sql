@@ -16,7 +16,7 @@ GO
 
 CREATE TABLE DimDate		---SCD TYPE 0
 (
-   DateKey		INT NOT NULL,
+   DateKey		INT PRIMARY KEY,
    aDate		DATE NOT NULL,
    aYear		INT NOT NULL,
    aQuarter		INT NOT NULL,
@@ -78,7 +78,7 @@ GO
 
 CREATE TABLE DimTime  ---SCD TYPE 0
 (
-   TimeKey     INT NOT NULL,
+   TimeKey     INT PRIMARY KEY,
    aTime       TIME(0) NOT NULL,
    anHour      INT NOT NULL,
    aMinute     INT NOT NULL,
@@ -128,11 +128,11 @@ GO
 SELECT * FROM DimTime;
 GO
 -- ======= DimLocation ============
-
-
+DROP TABLE IF EXISTS DimComplaintLocation
+GO
 CREATE TABLE DimComplaintLocation --- Type SCD 0
 (
-	LocationKey			INT NOT NULL,
+	LocationKey			INT PRIMARY KEY,
     Zip			        VARCHAR(255)	NULL,
 	LocationAddress		VARCHAR(255)    NULL,
     CityCouncilDistrict INT				NULL,
