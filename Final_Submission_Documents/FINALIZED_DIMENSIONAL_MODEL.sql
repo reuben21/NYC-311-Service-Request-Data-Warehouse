@@ -578,29 +578,30 @@ EXEC Extract_Complaint;
 SELECT * FROM Stage_Complaint;
 GO
 
-DROP TABLE IF EXISTS FactComplaint
+DROP TABLE IF EXISTS Preload_Complaint
 GO
-CREATE TABLE FactComplaint 
+CREATE TABLE Preload_Complaint 
 (
-    DateKey						INT NOT NULL FOREIGN KEY REFERENCES DimDate(DateKey),
-	TimeKey						INT NOT NULL FOREIGN KEY REFERENCES DimTime(TimeKey),
-    LocationKey					INT NOT NULL FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
-    AgencyKey					INT NOT NULL FOREIGN KEY REFERENCES DimAgency(AgencyKey),
-    ComplaintTypeKey			INT NOT NULL FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
-    StatusKey					INT NOT NULL FOREIGN KEY REFERENCES DimStatus(StatusKey),
+    DateKey						INT NOT NULL ,
+	TimeKey						INT NOT NULL ,
+    LocationKey					INT NOT NULL ,
+    AgencyKey					INT NOT NULL ,
+    ComplaintTypeKey			INT NOT NULL,
+    StatusKey					INT NOT NULL ,
     Total_Complaints			INT NOT NULL,
     Total_Resolved_Complaints	INT	NOT NULL,
     Total_Unresolved_Complaints INT	NOT NULL,
-    Avg_Resolution_Time_Hours	FLOAT NOT NULL
+    Avg_Resolution_Time_Hours	FLOAT 
 );
 GO
 
-CREATE OR ALTER PROCEDURE Preload_Complaint 
+
+CREATE OR ALTER PROCEDURE Transform_Complaint 
 AS 
 BEGIN
 -- Insert data from Stage_Complaint into Preload_Complaint
 INSERT INTO
-    FactComplaint (
+    Preload_Complaint (
         DateKey,
         TimeKey,
         LocationKey,
@@ -612,7 +613,8 @@ INSERT INTO
         Total_Unresolved_Complaints,
         Avg_Resolution_Time_Hours
     )
-SELECT 
+
+SELECT TOP(10000000)
     d.DateKey,
     t.TimeKey,
     l.LocationKey,
@@ -635,15 +637,14 @@ SELECT
     AVG(DATEDIFF (HOUR, s.StatusStarted, s.StatusEnded)) AS Avg_Resolution_Time_Hours
 FROM
     Stage_Complaint sc
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimDate d ON CONVERT(DATE, sc.StatusStarted) = d.aDate
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimTime t ON CONVERT(TIME, sc.StatusStarted) = t.aTime
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintLocation l ON sc.LocationZip = l.Zip
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimDate d ON CONVERT(DATE, sc.StatusStarted) = d.aDate
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimTime t ON CONVERT(TIME, sc.StatusStarted) = t.aTime
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintLocation l ON sc.LocationZip = l.Zip
     AND sc.LocationAddress = l.LocationAddress
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimAgency a ON sc.AgencyID = a.AgencyID
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintType ct ON sc.ComplaintTypeID = ct.ComplaintTypeID
-    JOIN [NYC_311_REQUESTS_DM].[dbo].DimStatus s ON sc.ServiceRequestID = s.StatusID
-WHERE 
-    sc.ServiceRequestID = s.StatusID
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimAgency a ON sc.AgencyID = a.AgencyID
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimComplaintType ct ON sc.ComplaintTypeID = ct.ComplaintTypeID
+    INNER JOIN [NYC_311_REQUESTS_DM].[dbo].DimStatus s ON sc.ServiceRequestID = s.StatusID
+
 GROUP BY
     d.DateKey,
     t.TimeKey,
@@ -651,14 +652,47 @@ GROUP BY
     a.AgencyKey,
     ct.ComplaintTypeKey,
     s.StatusKey
-    
 
 END 
 GO
 
-EXEC Preload_Complaint;
+EXEC Transform_Complaint;
+GO
+
+SELECT * FROM Preload_Complaint;
+
+DROP TABLE IF EXISTS FactComplaint
+GO
+CREATE TABLE FactComplaint 
+(
+    DateKey						INT NOT NULL FOREIGN KEY REFERENCES DimDate(DateKey),
+	TimeKey						INT NOT NULL FOREIGN KEY REFERENCES DimTime(TimeKey),
+    LocationKey					INT NOT NULL FOREIGN KEY REFERENCES DimComplaintLocation(LocationKey),
+    AgencyKey					INT NOT NULL FOREIGN KEY REFERENCES DimAgency(AgencyKey),
+    ComplaintTypeKey			INT NOT NULL FOREIGN KEY REFERENCES DimComplaintType(ComplaintTypeKey),
+    StatusKey					INT NOT NULL FOREIGN KEY REFERENCES DimStatus(StatusKey),
+    Total_Complaints			INT NOT NULL,
+    Total_Resolved_Complaints	INT	NOT NULL,
+    Total_Unresolved_Complaints INT	NOT NULL,
+    Avg_Resolution_Time_Hours	FLOAT
+);
+GO
+
+CREATE OR ALTER PROCEDURE Load_Complaint
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    INSERT INTO FactComplaint (DateKey, TimeKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey, Total_Complaints, Total_Resolved_Complaints, Total_Unresolved_Complaints, Avg_Resolution_Time_Hours)
+    SELECT P.DateKey, P.TimeKey, p.LocationKey, p.AgencyKey, p.ComplaintTypeKey, p.StatusKey, p.Total_Complaints, p.Total_Resolved_Complaints, p.Total_Unresolved_Complaints, p.Avg_Resolution_Time_Hours
+    FROM Preload_Complaint p
+    
+END
+
+EXECUTE Load_Complaint;
 
 SELECT * FROM FactComplaint;
+
 
 CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 GO
