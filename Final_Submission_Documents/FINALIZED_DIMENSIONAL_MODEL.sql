@@ -174,7 +174,7 @@ BEGIN
     SELECT DISTINCT
         IL.IncidentZip,
         IL.IncidentAddress,
-        CC.BoroughID,
+        CC.District,
         PP.PrecinctName,
         C.CityName,
         BB.BoroughName,
@@ -696,88 +696,3 @@ SELECT * FROM FactComplaint;
 
 CREATE INDEX IX_FactComplaint_FK ON FactComplaint(DateKey, LocationKey, AgencyKey, ComplaintTypeKey, StatusKey)
 GO
-
-
--- HOW TO GET THE Total_Complaints PER ROW:
-/*
-SELECT 
-    DimDate.cdate AS Date,
-    DimDate.chour AS Hour,
-    DimLocation.IncidentZip AS ZipCode,
-    DimAgency.AgencyName AS Agency,
-    COUNT(*) AS Total_Complaints
-FROM 
-    FactComplaint
-    JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
-    JOIN DimLocation ON FactComplaint.LocationKey = DimLocation.LocationKey
-    JOIN DimAgency ON FactComplaint.AgencyKey = DimAgency.AgencyKey
-GROUP BY 
-    DimDate.cdate,
-    DimDate.chour,
-    DimLocation.IncidentZip,
-    DimAgency.AgencyName
-
--- HOW TO GET THE Total_Resolved_Complaints PER ROW:
-SELECT 
-    DimDate.cdate AS Date,
-    DimDate.chour AS Hour,
-    DimLocation.IncidentZip AS ZipCode,
-    DimAgency.AgencyName AS Agency,
-    COUNT(CASE WHEN DimStatus.StatusName = 'Closed' THEN 1 ELSE NULL END) AS Total_Resolved_Complaints
-FROM 
-    FactComplaint
-    JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
-    JOIN DimLocation ON FactComplaint.LocationKey = DimLocation.LocationKey
-    JOIN DimAgency ON FactComplaint.AgencyKey = DimAgency.AgencyKey
-    JOIN DimStatus ON FactComplaint.StatusKey = DimStatus.StatusKey
-GROUP BY 
-    DimDate.cdate,
-    DimDate.chour,
-    DimLocation.IncidentZip,
-    DimAgency.AgencyName
-
--- HOW TO GET THE Total_Unresolved_Complaints PER ROW:
-SELECT 
-    DimDate.cdate AS Date,
-    DimDate.chour AS Hour,
-    DimLocation.IncidentZip AS ZipCode,
-    DimAgency.AgencyName AS Agency,
-    COUNT(CASE WHEN DimStatus.StatusName NOT IN ('Closed') THEN 1 ELSE NULL END) AS Total_Unresolved_Complaints
-FROM 
-    FactComplaint
-    JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
-    JOIN DimLocation ON FactComplaint.LocationKey = DimLocation.LocationKey
-    JOIN DimAgency ON FactComplaint.AgencyKey = DimAgency.AgencyKey
-    JOIN DimStatus ON FactComplaint.StatusKey = DimStatus.StatusKey
-GROUP BY 
-    DimDate.cdate,
-    DimDate.chour,
-    DimLocation.IncidentZip,
-    DimAgency.AgencyName
-
--- HOW TO GET THE Total_Escalated_Complaints PER ROW:
-SELECT 
-    DimDate.cdate AS Date,
-    DimDate.chour AS Hour,
-    DimLocation.IncidentZip AS ZipCode,
-    DimAgency.AgencyName AS Agency,
-    COUNT(CASE WHEN FactComplaint.Total_Escalated_Complaints > 0 THEN 1 ELSE NULL END) AS Total_Escalated_Complaints
-FROM 
-    FactComplaint
-    JOIN DimDate ON FactComplaint.DateKey = DimDate.DateKey
-    JOIN DimLocation ON FactComplaint.LocationKey = DimLocation.LocationKey
-    JOIN DimAgency ON FactComplaint.AgencyKey = DimAgency.AgencyKey
-GROUP BY 
-    DimDate.cdate,
-    DimDate.chour,
-    DimLocation.LocationIncidentZip,
-    DimAgency.AgencyName
-*/
-
---DROP TABLE dbo.factcomplaint
---DROP TABLE dbo.dimAgency
---DROP TABLE dbo.dimDate
---DROP TABLE dbo.DimTime
---DROP TABLE dbo.dimstatus
---DROP TABLE dbo.dimlocation
---DROP TABLE dbo.dimcomplainttype

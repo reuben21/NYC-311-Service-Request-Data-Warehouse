@@ -1,0 +1,96 @@
+﻿<DeploymentSnapshot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl2="http://schemas.microsoft.com/analysisservices/2003/engine/2" xmlns:ddl2_2="http://schemas.microsoft.com/analysisservices/2003/engine/2/2" xmlns:ddl100_100="http://schemas.microsoft.com/analysisservices/2008/engine/100/100" xmlns:ddl200="http://schemas.microsoft.com/analysisservices/2010/engine/200" xmlns:ddl200_200="http://schemas.microsoft.com/analysisservices/2010/engine/200/200" xmlns:ddl300="http://schemas.microsoft.com/analysisservices/2011/engine/300" xmlns:ddl300_300="http://schemas.microsoft.com/analysisservices/2011/engine/300/300" xmlns:ddl400="http://schemas.microsoft.com/analysisservices/2012/engine/400" xmlns:ddl400_400="http://schemas.microsoft.com/analysisservices/2012/engine/400/400" xmlns:ddl500="http://schemas.microsoft.com/analysisservices/2013/engine/500" xmlns:ddl500_500="http://schemas.microsoft.com/analysisservices/2013/engine/500/500" xmlns:dwd="http://schemas.microsoft.com/DataWarehouse/Designer/1.0">
+  <Target>
+    <Database>SSAS_NYC_311</Database>
+    <Server>.\REUBEN</Server>
+    <ConnectionString>Data Source=.\REUBEN;Timeout=0</ConnectionString>
+  </Target>
+  <Options>
+    <TransactionalDeployment>false</TransactionalDeployment>
+    <PartitionDeployment>DeployPartitions</PartitionDeployment>
+    <RoleDeployment>DeployRolesRetainMembers</RoleDeployment>
+    <ProcessingOption>Default</ProcessingOption>
+    <OutputScript></OutputScript>
+    <ImpactAnalysisFile></ImpactAnalysisFile>
+    <ConfigurationSettingsDeployment>Deploy</ConfigurationSettingsDeployment>
+    <OptimizationSettingsDeployment>Deploy</OptimizationSettingsDeployment>
+    <WriteBackTableCreation>UseExisting</WriteBackTableCreation>
+  </Options>
+  <Snapshot>
+    <ObjectSnapshots>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.RelationalDataSource</Type>
+        <TimeStamp>RgGtieRfy/xEiAn9YDjZWvaz5FU=2023-04-21 12:40:43 AM2023-04-21 12:11:38 AM</TimeStamp>
+        <ID>
+          <String>NYC 311 REQUESTS DM</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.DataSourceView</Type>
+        <TimeStamp>/liKK3QUt/uzNmc50iP6zboLu/0=2023-04-21 12:12:17 AM2023-04-21 12:12:17 AM</TimeStamp>
+        <ID>
+          <String>NYC 311 REQUESTS DM</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>i6sX6sZOel1br/guBWnnRTySrqA=2023-04-21 1:52:50 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Date</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>wjaW3gwlSSL88L+hSpWDxIkpEow=2023-04-21 7:41:42 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Complaint Location</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>RleTZd0fSrDt19Fm3MtZeQz/zAU=2023-04-21 2:55:55 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Agency</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>EMIQtRgaZKkT1zyamFa9Sq5ab7s=2023-04-21 3:02:44 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Complaint Type</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>BpySBZ7nB+XDK8JeFWtf3F+r8NA=2023-04-21 1:16:21 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Time</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Dimension</Type>
+        <TimeStamp>iDKXGOqnXw0nMLIZb4ozvtNihPY=2023-04-21 3:02:44 AM2023-04-21 12:20:09 AM</TimeStamp>
+        <ID>
+          <String>Dim Status</String>
+        </ID>
+      </ObjectSnapshot>
+      <ObjectSnapshot>
+        <Type>Microsoft.AnalysisServices.Cube</Type>
+        <TimeStamp>JsuQho76tc1uYxoPkHOTsBpuowM=2023-04-21 7:41:42 AM2023-04-21 1:07:21 AM4Bt3T0HrOI7d++DBB2pdblxfMeg=2023-04-21 1:07:21 AM2023-04-21 1:07:21 AM</TimeStamp>
+        <ID>
+          <String>NYC 311 REQUESTS DM</String>
+        </ID>
+      </ObjectSnapshot>
+    </ObjectSnapshots>
+    <DatabaseSnapshot>
+      <Type>Microsoft.AnalysisServices.Database</Type>
+      <TimeStamp>U0A2eadhuCYH5H//QcZ+iVnLT2g=2023-04-21 12:09:58 AM2023-04-21 12:09:58 AM</TimeStamp>
+      <ID>
+        <String>SSAS_NYC_311</String>
+      </ID>
+    </DatabaseSnapshot>
+    <Granularity>Coarse</Granularity>
+  </Snapshot>
+  <AssemblyLocations />
+  <ProcessingComplete>true</ProcessingComplete>
+  <LastDeployed>2023-04-21T11:41:54.686667Z</LastDeployed>
+</DeploymentSnapshot>
