@@ -1,0 +1,10 @@
+# NYC 311 Service Request ETL Project
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/c3f3da0c-d742-45c4-84e9-a04b7e3d7205)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/8f794de2-9df7-42a3-98dc-fe3f78a22695)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/f7fa0a78-1bfb-4c81-83b3-9a3f2ed430e8)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/a5e549be-eeba-44f2-a5fa-702b938d8e0a)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/69a69193-e79a-42d0-ab8a-9ec374e4ac6b)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/f9f383b4-7277-40fb-b665-9aafc7dcfcd5)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/1185e469-9bd0-4af2-8a64-9027a8cbfd31)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/553e1f68-28b9-4a54-8065-22368b553ccc)
+![image](https://github.com/reuben21/NYC-311-Service-Request-Data-Warehouse/assets/49688611/81d27162-67b0-4306-8f5e-53fc38ba9aa7)
